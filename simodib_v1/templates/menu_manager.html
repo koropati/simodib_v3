@@ -1,0 +1,56 @@
+<li {% block aktif_dashboard %} {% endblock %}>
+<a href="#">
+	<i class="menu-icon ti-desktop"></i>
+	<span class="mm-text ">Dashboard</span>
+</a>
+</li>
+<!-- ======================================================= -->
+<li class="menu-dropdown">
+<a href="javascript:void(0)">
+	<i class="menu-icon ti-check-box"></i>
+	<span>Distribusi</span>
+	<span class="fa arrow"></span>
+</a>
+<ul class="sub-menu">
+	<li {% block aktif_distribution %} {% endblock %}>
+	<a href="#">
+		<i class="fa fa-fw ti-receipt"></i> New Distribution
+		<span class="fa arrow"></span>
+	</a>
+</li>
+<li {% block aktif_finish %} {% endblock %}>
+<a href="#">
+	<i class="fa fa-fw ti-receipt"></i> Finished
+	<span class="fa arrow"></span>
+</a>
+</li>
+<li {% block aktif_unfinish %} {% endblock %}>
+<a href="#">
+<i class="fa fa-fw ti-receipt"></i> Unfinished
+<span class="fa arrow"></span>
+</a>
+</li>
+</ul>
+</li>
+<!-- ======================================================= -->
+<li {% block aktif_beras %} {% endblock %}>
+<a href="#">
+<i class="menu-icon ti-layout-list-large-image"></i>
+<span class="mm-text ">Data Beras</span>
+</a>
+</li>
+<!-- ======================================================= -->
+<li {% block aktif_test %} {% endblock %}>
+<a href="#">
+<i class="menu-icon ti-desktop"></i>
+<span class="mm-text ">Data Test</span>
+</a>
+</li>
+<!-- ======================================================= -->
+<li {% block aktif_kurir %} {% endblock %}>
+<a href="#">
+<i class="menu-icon ti-desktop"></i>
+<span class="mm-text ">Data Kurir</span>
+</a>
+</li>
+<!-- ======================================================= -->

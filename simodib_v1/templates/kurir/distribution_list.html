@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="card">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>Nama Distribusi</th>
+          <th>Pemesan</th>
+          <th>Alamat</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for distribution in distributions %}
+          <tr>
+            <td class="align-middle">{{ distribution.name }}</td>
+            <td class="align-middle">{{ distribution.ordered_by }}</td>
+            <td class="align-middle">{{ distribution.address }}</td>
+            <td class="text-right">
+              <a href="#" class="btn btn-primary">Start Distribution</a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td class="bg-light text-center font-italic" colspan="4">No Distributions matching for your right now.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

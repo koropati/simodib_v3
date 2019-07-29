@@ -1,0 +1,72 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+  LOGIN | SIMODIB
+{% endblock %}
+{% block content %}
+  {% if form.non_field_errors %}
+    <script>
+    {% for error in form.non_field_errors %}
+      $(document).ready(function() {
+      new PNotify({
+      title: 'Sorry, Something Wrong!',
+      text: '{{error}}',
+      });
+      });
+    {% endfor %}
+    </script>
+  {% endif %}
+  <div class="col-xs-12">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next }}">
+      {{ form.username|as_crispy_field }}
+      {{ form.password|as_crispy_field }}
+      <div class="form-group">
+        <button type="submit" class="btn button-pill button-royal-flat hvr-push" style="width: 100%">
+        LOGIN
+        </button>
+      </div>
+      <a href="#" id="forgot" class="forgot"> Forgot Password ? </a>
+    </form>
+  </div>
+{% endblock %}
+{% block extraCss %}
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!-- Button -->
+  <link href="{% static 'vendors/hover/css/hover-min.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'vendors/laddabootstrap/css/ladda-themeless.min.css' %}">
+  <link href="{% static 'css/buttons_sass.css' %}" rel="stylesheet">
+  <link href="{% static 'css/advbuttons.css' %}" rel="stylesheet">
+  <!-- End Button -->
+  <!-- PNotify -->
+  <link rel="stylesheet" href="{% static 'vendors/animate/animate.min.css' %}"/>
+  <link rel="stylesheet" href="{% static 'vendors/pnotify/css/pnotify.css' %}">
+  <link href="{% static 'vendors/pnotify/css/pnotify.brighttheme.css' %}" rel="stylesheet" type="text/css"/>
+  <link href="{% static 'vendors/pnotify/css/pnotify.buttons.css' %}" rel="stylesheet" type="text/css"/>
+  <link href="{% static 'vendors/pnotify/css/pnotify.mobile.css' %}" rel="stylesheet" type="text/css"/>
+  <link href="{% static 'vendors/pnotify/css/pnotify.history.css' %}" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/custom_css/toastr_notificatons.css' %}">
+  <!-- End PNotify -->
+{% endblock %}
+{% block extraJs %}
+  <!-- Button -->
+  <script type="text/javascript" src="{% static 'vendors/Buttons/js/buttons.js' %}"></script>
+  <script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/spin.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/ladda.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/custom_js/button_main.js' %}"></script>
+  <!-- End Button -->
+  <!-- PNotify -->
+  <script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.js' %}"></script>
+  <script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.animate.js' %}"></script>
+  <script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.buttons.js' %}"></script>
+  <script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.confirm.js' %}"></script>
+  <script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.nonblock.js' %}"></script>
+  <script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.mobile.js' %}"></script>
+  <script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.desktop.js' %}"></script>
+  <script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.history.js' %}"></script>
+  <script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.callbacks.js' %}"></script>
+  <script src="{% static 'js/custom_js/notifications.js' %}"></script>
+  <!-- End Notify -->
+{% endblock %}

@@ -1,0 +1,42 @@
+<li {% block aktif_dashboard %} {% endblock %}>
+<a href="#">
+	<i class="menu-icon ti-desktop"></i>
+	<span class="mm-text ">Dashboard</span>
+</a>
+</li>
+<!-- ======================================================= -->
+<li class="menu-dropdown">
+<a href="javascript:void(0)">
+	<i class="menu-icon ti-check-box"></i>
+	<span>Job Distribution</span>
+	<span class="fa arrow"></span>
+</a>
+<ul class="sub-menu">
+	<li {% block aktif_unpicked %} {% endblock %}>
+	<a href="#">
+		<i class="fa fa-fw ti-receipt"></i> Un Picked
+		<span class="fa arrow"></span>
+	</a>
+</li>
+<li {% block aktif_now %} {% endblock %}>
+<a href="#">
+	<i class="fa fa-fw ti-receipt"></i> Now Distribution
+	<span class="fa arrow"></span>
+</a>
+</li>
+<li {% block aktif_finished %} {% endblock %}>
+<a href="#">
+<i class="fa fa-fw ti-receipt"></i> Finished
+<span class="fa arrow"></span>
+</a>
+</li>
+</ul>
+</li>
+<!-- ======================================================= -->
+<li {% block aktif_data %} {% endblock %}>
+<a href="#">
+<i class="menu-icon ti-desktop"></i>
+<span class="mm-text ">Data Distribusi</span>
+</a>
+</li>
+<!-- ======================================================= -->

@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>SIMODIB | Sistem Monitoring Distribusi Beras</title>
+		<meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+		<link rel="shortcut icon" href="{% static 'img/favicon.ico' %}"/>
+		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+		<![endif]-->
+		<!-- global css -->
+		<link type="text/css" href="{% static 'css/app.css' %}" rel="stylesheet"/>
+		<link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}">
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+		crossorigin="anonymous"></script>
+		<!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
+		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
+		{% block extraCss %}
+		{% endblock %}
+	</head>
+	<body class="skin-default">
+		<div class="preloader">
+			<div class="loader_img"><img src="{% static 'img/loader.gif' %}" alt="loading..." height="64" width="64"></div>
+		</div>
+		<!-- header logo: style can be found in header-->
+		<header class="header">
+			<nav class="navbar navbar-static-top" role="navigation">
+				<a href="{% url 'home' %}" class="logo">
+					<!-- Add the class icon to your logo image or logo icon to add the margining -->
+					<img src="{% static 'img/logo.png' %}" alt="logo"/>
+				</a>
+				<!-- Header Navbar: style can be found in header-->
+				<!-- Sidebar toggle button-->
+				<!-- Sidebar toggle button-->
+				<div>
+					<a href="javascript:void(0)" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button"> <i
+						class="fa fa-fw ti-menu"></i>
+					</a>
+				</div>
+				<div class="navbar-right">
+					<ul class="nav navbar-nav">
+						<!--rightside toggle-->
+						<li>
+							<a href="javascript:void(0)" class="dropdown-toggle toggle-right">
+								<i class="fa fa-fw ti-view-list black"></i>
+								<span class="label label-danger">9</span>
+							</a>
+						</li>
+						<!-- User Account: style can be found in dropdown-->
+						<li class="dropdown user user-menu">
+							<a href="javascript:void(0)" class="dropdown-toggle padding-user" data-toggle="dropdown">
+								<img src="{% static 'img/authors/avatar1.png' %}" width="35" class="img-circle img-responsive pull-left"
+								height="35" alt="User Image">
+								<div class="riot">
+									<div>
+										{% if user.is_authenticated %}
+											{{ user.username }}
+										{% endif %}
+										<span>
+											<i class="caret"></i>
+										</span>
+									</div>
+								</div>
+							</a>
+							<ul class="dropdown-menu">
+								<!-- User image -->
+								<li class="user-header">
+									<img src="{% static 'img/authors/avatar1.png' %}" class="img-circle" alt="User Image">
+									{% if user.is_authenticated %}
+										<p>{{ user.username }}</p>
+									{% else %}
+										<p>Guest User</p>
+									{% endif %}
+								</li>
+								<!-- Menu Body -->
+								<li role="presentation"></li>
+								<li>
+									<a href="#">
+										{% if user.is_authenticated and user.is_manager %}
+											<p>User type : Manager</p>
+											{% elif user.is_authenticated and user.is_kurir %}
+											<p>User type : Manager</p>
+										{% else %}
+											<p>User type : Guest</p>
+										{% endif %}
+									</a>
+								</li>
+								<li class="p-t-3">
+									<a href="#">
+										<i class="fa fa-fw ti-user"></i> My Profile
+									</a>
+								</li>
+								<li role="presentation"></li>
+								<li>
+									<a href="#">
+										<i class="fa fa-fw ti-settings"></i> Account Settings
+									</a>
+								</li>
+								
+								<li role="presentation" class="divider"></li>
+								<!-- Menu Footer-->
+								<li class="user-footer">
+									<div class="pull-left">
+										<a href="#">
+											<i class="fa fa-fw ti-lock"></i>
+											Lock
+										</a>
+									</div>
+									<div class="pull-right">
+										<a href="{% url 'logout' %}">
+											<i class="fa fa-fw ti-shift-right"></i>
+											Logout
+										</a>
+									</div>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</header>
+		<div class="wrapper row-offcanvas row-offcanvas-left">
+			<!-- Left side column. contains the logo and sidebar -->
+			<aside class="left-side sidebar-offcanvas">
+				<!-- sidebar: style can be found in sidebar-->
+				<section class="sidebar affix">
+					<div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 100vh;">
+						<div class="left_slim" style="overflow: hidden; width: auto; height: 100vh;">
+							<div id="menu" class="menu_align" role="navigation">
+								<div class="nav_profile">
+									<div class="media profile-left">
+										<a class="pull-left profile-thumb" href="javascript:void(0)">
+											<img src="{% static 'img/authors/avatar1.png' %}" class="img-circle" alt="User Image">
+										</a>
+										<div class="content-profile">
+											<h4 class="media-heading">
+											{% if user.is_authenticated %}
+												<p>{{ user.username }}</p>
+											{% else %}
+												<p>Guest User</p>
+											{% endif %}
+											</h4>
+											<ul class="icon-list">
+												<li>
+													<a href="#">
+														<i class="fa fa-fw ti-user"></i>
+													</a>
+												</li>
+												<li>
+													<a href="#">
+														<i class="fa fa-fw ti-lock"></i>
+													</a>
+												</li>
+												<li>
+													<a href="#">
+														<i class="fa fa-fw ti-settings"></i>
+													</a>
+												</li>
+												<li>
+													<a href="#">
+														<i class="fa fa-fw ti-shift-right"></i>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+								<!-- MENU DISINI -->
+								<ul class="navigation">
+									{% if user.is_authenticated and user.is_kurir %}
+										<li {% block aktif_dashboard_kurir %} {% endblock %}>
+										<a href="#">
+											<i class="menu-icon ti-desktop"></i>
+											<span class="mm-text ">Dashboard</span>
+										</a>
+									</li>
+									<!-- ======================================================= -->
+									<li class="menu-dropdown">
+										<a href="javascript:void(0)">
+											<i class="menu-icon ti-check-box"></i>
+											<span>Job Distribution</span>
+											<span class="fa arrow"></span>
+										</a>
+										<ul class="sub-menu">
+											<li {% block aktif_unpicked %} {% endblock %}>
+											<a href="#">
+												<i class="fa fa-fw ti-receipt"></i> Un Picked
+												<span class="fa arrow"></span>
+											</a>
+										</li>
+										<li {% block aktif_now %} {% endblock %}>
+										<a href="#">
+											<i class="fa fa-fw ti-receipt"></i> Now Distribution
+											<span class="fa arrow"></span>
+										</a>
+									</li>
+									<li {% block aktif_finished %} {% endblock %}>
+									<a href="#">
+										<i class="fa fa-fw ti-receipt"></i> Finished
+										<span class="fa arrow"></span>
+									</a>
+								</li>
+							</ul>
+						</li>
+						<!-- ======================================================= -->
+						<li {% block aktif_data %} {% endblock %}>
+						<a href="#">
+							<i class="menu-icon ti-desktop"></i>
+							<span class="mm-text ">Data Distribusi</span>
+						</a>
+					</li>
+					<!-- ======================================================= -->
+					{% elif user.is_authenticated and user.is_manager %}
+					<li {% block aktif_dashboard %} {% endblock %}>
+					<a href="{% url 'manager:dashboard_view' %}">
+						<i class="menu-icon ti-desktop"></i>
+						<span class="mm-text ">Dashboard</span>
+					</a>
+				</li>
+				<!-- ======================================================= -->
+				<li class="menu-dropdown" {% block aktif_distribution %} {% endblock %}>
+					<a href="javascript:void(0)">
+						<i class="menu-icon ti-check-box"></i>
+						<span>Distribusi</span>
+						<span class="fa arrow"></span>
+					</a>
+					<ul class="sub-menu">
+						<li {% block aktif_newDistribution %} {% endblock %}>
+						<a href="{% url 'manager:viewDistribusi' %}">
+							<i class="fa fa-fw ti-receipt"></i> New Distribution
+							<span class="fa arrow"></span>
+						</a>
+					</li>
+					<li {% block aktif_finish %} {% endblock %}>
+					<a href="#">
+						<i class="fa fa-fw ti-receipt"></i> Finished
+						<span class="fa arrow"></span>
+					</a>
+				</li>
+				<li {% block aktif_unfinish %} {% endblock %}>
+				<a href="{% url 'manager:viewUnfinished' %}">
+					<i class="fa fa-fw ti-receipt"></i> Unfinished
+					<span class="fa arrow"></span>
+				</a>
+			</li>
+		</ul>
+	</li>
+	<!-- ======================================================= -->
+	<li {% block aktif_beras %} {% endblock %}>
+	<a href="{% url 'manager:viewBeras' %}">
+		<i class="menu-icon ti-layout-list-large-image"></i>
+		<span class="mm-text ">Data Beras</span>
+	</a>
+</li>
+<!-- ======================================================= -->
+<li class="menu-dropdown">
+	<a href="javascript:void(0)">
+		<i class="menu-icon ti-check-box"></i>
+		<span>Settings</span>
+		<span class="fa arrow"></span>
+	</a>
+	<ul class="sub-menu">
+		<li {% block aktif_portal %} {% endblock %}>
+		<a href="{% url 'manager:viewPortal' %}">
+			<i class="fa fa-fw ti-receipt"></i> Portal Sign Up
+			<span class="fa arrow"></span>
+		</a>
+	</li>
+	<li {% block aktif_jadwal %} {% endblock %}>
+	<a href="#">
+		<i class="fa fa-fw ti-receipt"></i> jadwal distribusi
+		<span class="fa arrow"></span>
+	</a>
+</li>
+</ul>
+</li>
+<!-- ======================================================= -->
+<li {% block aktif_kurir %} {% endblock %}>
+<a href="{% url 'manager:viewKurir' %}">
+<i class="menu-icon ti-desktop"></i>
+<span class="mm-text ">Data Kurir</span>
+</a>
+</li>
+<!-- ======================================================= -->
+{% endif %}
+</ul>
+<!-- / .navigation -->
+</div>
+</div>
+</div>
+<!-- menu -->
+</section>
+<!-- /.sidebar -->
+</aside>
+<aside class="right-side">
+<!-- Content Header (Page header) -->
+<section class="content-header">
+{% block content-header %}
+{% endblock %}
+</section>
+<!-- Main content -->
+<section class="content">
+{% block content %}
+{% endblock %}
+<!--rightside bar -->
+<div id="right">
+<div id="right-slim">
+<div class="rightsidebar-right">
+<div class="rightsidebar-right-content">
+<div class="panel-tabs">
+<ul class="nav nav-tabs nav-float" role="tablist">
+<li class="active text-center">
+<a href="#r_tab1" role="tab" data-toggle="tab"><i
+class="fa fa-fw ti-comments"></i></a>
+</li>
+<li class="text-center">
+<a href="#r_tab2" role="tab" data-toggle="tab"><i class="fa fa-fw ti-bell"></i></a>
+</li>
+<li class="text-center">
+<a href="#r_tab3" role="tab" data-toggle="tab"><i
+class="fa fa-fw ti-settings"></i></a>
+</li>
+</ul>
+</div>
+<div class="tab-content">
+<div class="tab-pane fade in active" id="r_tab1">
+<div id="slim_t1">
+<h5 class="rightsidebar-right-heading text-uppercase text-xs">
+<i class="menu-icon  fa fa-fw ti-user"></i>
+Contacts
+</h5>
+<ul class="list-unstyled margin-none">
+<li class="rightsidebar-contact-wrapper">
+	<a class="rightsidebar-contact" href="javascript:void(0)">
+		<img src="{% static 'img/authors/avatar6.jpg' %}"
+		class="img-circle pull-right" alt="avatar-image">
+		<i class="fa fa-circle text-xs text-primary"></i>
+		Dewok Satria
+	</a>
+</li>
+<li class="rightsidebar-contact-wrapper">
+	<a class="rightsidebar-contact" href="javascript:void(0)">
+		<img src="{% static 'img/authors/avatar.jpg' %}"
+		class="img-circle pull-right" alt="avatar-image">
+		<i class="fa fa-circle text-xs text-primary"></i>
+		Budi Artawan
+	</a>
+</li>
+<li class="rightsidebar-contact-wrapper">
+	<a class="rightsidebar-contact" href="javascript:void(0)">
+		<img src="{% static 'img/authors/avatar2.jpg' %}"
+		class="img-circle pull-right" alt="avatar-image">
+		<i class="fa fa-circle text-xs text-primary"></i>
+		Angga Juliasta
+	</a>
+</li>
+<li class="rightsidebar-contact-wrapper">
+	<a class="rightsidebar-contact" href="javascript:void(0)">
+		<img src="{% static 'img/authors/avatar3.jpg' %}"
+		class="img-circle pull-right" alt="avatar-image">
+		<i class="fa fa-circle text-xs text-warning"></i>
+		Yusril
+	</a>
+</li>
+</ul>
+<h5 class="rightsidebar-right-heading text-uppercase text-xs">
+<i class="fa fa-fw ti-export"></i>
+Recent Updates
+</h5>
+<div>
+<ul class="list-unstyled">
+	<li class="rightsidebar-notification">
+		<a href="javascript:void(0)">
+			<i class="fa ti-comments-smiley fa-fw text-primary"></i>
+			New Comment
+		</a>
+	</li>
+	<li class="rightsidebar-notification">
+		<a href="javascript:void(0)">
+			<i class="fa ti-twitter-alt fa-fw text-success"></i>
+			3 New Followers
+		</a>
+	</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="tab-pane fade" id="r_tab2">
+<div id="slim_t2">
+<h5 class="rightsidebar-right-heading text-uppercase text-xs">
+<i class="fa fa-fw ti-bell"></i>
+Notifications
+</h5>
+<ul class="list-unstyled m-t-15 notifications">
+<li>
+	<a href="" class="message icon-not striped-col">
+		<img class="message-image img-circle"
+		src="{% static 'img/authors/avatar3.jpg' %}" alt="avatar-image">
+		<div class="message-body">
+			<strong>Budi Artawan</strong>
+			<br>
+			5 members joined today
+			<br>
+			<small class="noti-date">Just now</small>
+		</div>
+	</a>
+</li>
+<li>
+	<a href="" class="message icon-not">
+		<img class="message-image img-circle"
+		src="{% static 'img/authors/avatar.jpg' %}" alt="avatar-image">
+		<div class="message-body">
+			<strong>Angga Juliasta</strong>
+			<br>
+			likes a photo of you
+			<br>
+			<small class="noti-date">5 min</small>
+		</div>
+	</a>
+</li>
+<li class="text-right noti-footer"><a href="javascript:void(0)">View All Notifications <i
+class="ti-arrow-right"></i></a></li>
+</ul>
+<h5 class="rightsidebar-right-heading text-uppercase text-xs">
+<i class="fa fa-fw ti-check-box"></i>
+Tasks
+</h5>
+<ul class="list-unstyled m-t-15">
+<li>
+	<div>
+		<p>
+			<span>Button Design</span>
+			<small class="pull-right text-muted">40%</small>
+		</p>
+		<div class="progress progress-xs progress-striped active">
+			<div class="progress-bar progress-bar-success"
+				role="progressbar"
+				aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"
+				style="width: 40%">
+				<span class="sr-only">40% Complete (success)</span>
+			</div>
+		</div>
+	</div>
+</li>
+<li>
+	<div>
+		<p>
+			<span>Theme Creation</span>
+			<small class="pull-right text-muted">20%</small>
+		</p>
+		<div class="progress progress-xs progress-striped active">
+			<div class="progress-bar progress-bar-info" role="progressbar"
+				aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"
+				style="width: 20%">
+				<span class="sr-only">20% Complete</span>
+			</div>
+		</div>
+	</div>
+</li>
+<li>
+	<div>
+		<p>
+			<span>XYZ Task To Do</span>
+			<small class="pull-right text-muted">60%</small>
+		</p>
+		<div class="progress progress-xs progress-striped active">
+			<div class="progress-bar progress-bar-warning"
+				role="progressbar"
+				aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+				style="width: 60%">
+				<span class="sr-only">60% Complete (warning)</span>
+			</div>
+		</div>
+	</div>
+</li>
+<li>
+	<div>
+		<p>
+			<span>Transitions Creation</span>
+			<small class="pull-right text-muted">80%</small>
+		</p>
+		<div class="progress progress-xs progress-striped active">
+			<div class="progress-bar progress-bar-danger" role="progressbar"
+				aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"
+				style="width: 80%">
+				<span class="sr-only">80% Complete (danger)</span>
+			</div>
+		</div>
+	</div>
+</li>
+<li class="text-right"><a href="javascript:void(0)">View All Tasks <i
+class="ti-arrow-right"></i></a>
+</li>
+</ul>
+</div>
+</div>
+<div class="tab-pane fade" id="r_tab3">
+<div id="slim_t3">
+<h5 class="rightsidebar-right-heading text-uppercase gen-sett-m-t text-xs">
+<i class="fa fa-fw ti-settings"></i>
+General
+</h5>
+<ul class="list-unstyled settings-list m-t-10">
+<li>
+<label for="status">Available</label>
+<span class="pull-right">
+	<input type="checkbox" id="status" name="my-checkbox" checked>
+</span>
+</li>
+<li>
+<label for="email-auth">Login with Email</label>
+<span class="pull-right">
+	<input type="checkbox" id="email-auth" name="my-checkbox">
+</span>
+</li>
+<li>
+<label for="update">Auto Update</label>
+<span class="pull-right">
+	<input type="checkbox" id="update" name="my-checkbox">
+</span>
+</li>
+</ul>
+<h5 class="rightsidebar-right-heading text-uppercase text-xs">
+<i class="fa fa-fw ti-volume"></i>
+Sound & Notification
+</h5>
+<ul class="list-unstyled settings-list m-t-10">
+<li>
+<label for="chat-sound">Chat Sound</label>
+<span class="pull-right">
+	<input type="checkbox" id="chat-sound" name="my-checkbox" checked>
+</span>
+</li>
+<li>
+<label for="noti-sound">Notification Sound</label>
+<span class="pull-right">
+	<input type="checkbox" id="noti-sound" name="my-checkbox">
+</span>
+</li>
+<li>
+<label for="remain">Remainder </label>
+<span class="pull-right">
+	<input type="checkbox" id="remain" name="my-checkbox" checked>
+</span>
+</li>
+<li>
+<label for="vol">Volume</label>
+<input type="range" id="vol" min="0" max="100" value="15">
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="background-overlay"></div>
+</section>
+<!-- /.content -->
+</aside>
+<!-- /.right-side -->
+</div>
+<!-- /.right-side -->
+<!-- ./wrapper -->
+<!-- global js -->
+<script src="{% static 'js/app.js' %}" type="text/javascript"></script>
+{% block extraJs %}
+{% endblock %}
+</body>
+</html>

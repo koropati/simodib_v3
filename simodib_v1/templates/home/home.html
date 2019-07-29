@@ -1,0 +1,125 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block content %}
+	<div class="row">
+		<div class="profile-widget text-center">
+			<div class="bg-landing-page bg-profile"></div>
+			<img src="{% static 'img/logo_aja.png' %}" class="thumb-lg img-circle img-thumbnail" alt="img" height="200" width="200">
+			<h4>Guest User</h4>
+			<h6>You Must Login to get some Access</h6>
+			<center>
+			<a href="{% url 'login' %}" class="button button-pill button-royal-flat hvr-push">
+				<span class="fa fa-fw fa-sign-in"></span> Login
+			</a>
+			</center>
+			<p class="m-t-20 clearfix p-10">It has survived not only five centuries, but also the
+				leap into
+			electronic typesetting.</p>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="col-sm-6 col-md-6 col-lg-3">
+						<div class="widget-bg-color-icon card-box border_success">
+							<div class="bg-icon bg-success pull-left">
+								<i class="fa fa-fw fa-truck"></i>
+							</div>
+							<div class="text-right">
+								<h3 class="text-dark">
+								<b id="widget_count1">
+								{{totalKurir}}
+								</b>
+								</h3>
+								<p>
+									Kurir
+								</p>
+							</div>
+							<div class="clearfix">
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6 col-md-6 col-lg-3">
+						<div class="widget-bg-color-icon card-box border_warning">
+							<div class="bg-icon bg-warning pull-left">
+								<i class="fa fa-fw fa-shopping-cart"></i>
+							</div>
+							<div class="text-right">
+								<h3 class="text-success">
+								<b id="widget_count3">
+								3,251
+								</b>
+								</h3>
+								<p>
+									Total Transaction
+								</p>
+							</div>
+							<div class="clearfix">
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6 col-md-6 col-lg-3">
+						<div class="widget-bg-color-icon card-box border_danger">
+							<div class="bg-icon bg-danger pull-left">
+								<i class="fa fa-fw fa-calendar-o"></i>
+							</div>
+							<div class="text-right">
+								<h3 class="text-dark">
+								<b id="widget_count2">
+								7,968
+								</b>
+								</h3>
+								<p class="text-primary">
+									Today Transaction
+								</p>
+							</div>
+							<div class="clearfix">
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6 col-md-6 col-lg-3">
+						<div class="widget-bg-color-icon card-box border_info">
+							<div class="bg-icon bg-info pull-left">
+								<i class="fa fa-fw fa-archive"></i>
+							</div>
+							<div class="text-right">
+								<h3 class="text-dark">
+								<b id="widget_count2">
+								7,968
+								</b>
+								</h3>
+								<p class="text-primary">
+									Stock Available
+								</p>
+							</div>
+							<div class="clearfix">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="">
+				<div class="social_icons p-10 text-white bg-landing-page">
+					<i class="ti-facebook" aria-hidden="true"></i>
+					<i class="ti-twitter" aria-hidden="true"></i>
+					<i class="ti-google" aria-hidden="true"></i>
+					<i class="ti-youtube" aria-hidden="true"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block extraCss %}
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Button -->
+	<link href="{% static 'vendors/hover/css/hover-min.css' %}" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'vendors/laddabootstrap/css/ladda-themeless.min.css' %}">
+	<link href="{% static 'css/buttons_sass.css' %}" rel="stylesheet">
+	<link href="{% static 'css/advbuttons.css' %}" rel="stylesheet">
+	<!-- End Button -->
+{% endblock %}
+{% block extraJs %}
+	<!-- Button -->
+	<script type="text/javascript" src="{% static 'vendors/Buttons/js/buttons.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/spin.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/ladda.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/custom_js/button_main.js' %}"></script>
+	<!-- End Button -->
+{% endblock %}

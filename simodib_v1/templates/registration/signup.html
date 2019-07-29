@@ -1,0 +1,36 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+{% block title %}
+	PORTAL SIGN UP | SIMODIB
+{% endblock %}
+{% block content %}
+	<h2>Sign up for a free account</h2>
+	<p class="lead">Select below the type of account you want to create</p>
+	<a href="{% url 'kurir_signup' %}" class="btn btn-student btn-lg" role="button">
+		<button class="button button-pill hvr-push button-warning">
+		KURIR
+		</button>
+	</a>
+	<a href="{% url 'manager_signup' %}" class="btn btn-teacher btn-lg" role="button">
+		<button class="button button-pill hvr-push button-primary">
+		MANAGER
+		</button>
+	</a>
+{% endblock %}
+{% block extraCss %}
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Button -->
+	<link href="{% static 'vendors/hover/css/hover-min.css' %}" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'vendors/laddabootstrap/css/ladda-themeless.min.css' %}">
+	<link href="{% static 'css/buttons_sass.css' %}" rel="stylesheet">
+	<link href="{% static 'css/advbuttons.css' %}" rel="stylesheet">
+	<!-- End Button -->
+{% endblock %}
+{% block extraJs %}
+	<!-- Button -->
+	<script type="text/javascript" src="{% static 'vendors/Buttons/js/buttons.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/spin.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/ladda.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/custom_js/button_main.js' %}"></script>
+	<!-- End Button -->
+{% endblock %}
