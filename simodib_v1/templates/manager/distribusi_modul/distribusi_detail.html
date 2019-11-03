@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block aktif_distribusi %}
+	active
+{% endblock %}
+{% block aktif_unfinish %}
 	class="active"
 {% endblock %}
 {% block content-header %}
@@ -11,8 +14,14 @@
 				<i class="fa fa-fw ti-home"></i> Dashboard
 			</a>
 		</li>
+		<li>
+			Distribusi
+		</li>
+		<li>
+			Belum Selesai (+Kurir)
+		</li>
 		<li class="active">
-			Data Distribusi
+			Detail
 		</li>
 	</ol>
 {% endblock %}
@@ -41,7 +50,7 @@
 					<legend>NAMA/KODE DISTRIBUSI </legend>
 					<div data-row-span="1">
 						<div data-field-span="1" class="" style="height: 64px;">
-							<label>Branch Name</label>
+							<label>Kode Distribusi Beras</label>
 							<input type="text" value="{{dataDistribusi.name}}" disabled="">
 						</div>
 					</div>
@@ -66,11 +75,11 @@
 								<div data-row-span="4">
 									<div data-field-span="2" data-field-error="Please enter a valid email address" style="height: 82px;">
 										<label>E-mail</label>
-										<input type="text">
+										<input type="text" value="{{dataDistribusi.email}}" disabled="">
 									</div>
 									<div data-field-span="1" style="height: 82px;">
 										<label>Mobile No.</label>
-										<input type="text">
+										<input type="text" value="{{dataDistribusi.telepon}}" disabled="">
 									</div>
 								</div>
 								<div data-row-span="2">
@@ -80,8 +89,8 @@
 										<input type="text" value="{{dataDistribusi.address}}" disabled="">
 									</div>
 									<div data-field-span="1" style="height: 82px;">
-										<label>CATATAN OPSIONAL:</label>
-										<input type="text">
+										<label>CATATAN KHUSUS:</label>
+										<input type="text" value="{{dataDistribusi.catatan_khusus}}">
 									</div>
 								</div>
 								<br>
@@ -131,10 +140,7 @@
 								<legend>Aksi</legend>
 								<div data-row-span="1">
 									<div data-field-span="1" style="height: 68px;">
-										<label></label>
-										<a href="">
-											<button type="button" class="btn btn-secondary">Kembali</button>
-										</a>
+										<input type=button value="KEMBALI" class="button button-pill button-caution-flat hvr-pulse-shrink" onClick="javascript:history.go(-1);">
 									</div>
 								</div>
 							</fieldset>

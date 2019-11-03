@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
-
+  
 class User(AbstractUser):
 	is_kurir = models.BooleanField('user kurir',default=False)
 	is_manager = models.BooleanField('user manager',default=False)
@@ -16,6 +16,9 @@ class Distribution(models.Model):
 	name = models.CharField(max_length=255)
 	ordered_by = models.CharField(max_length=255)
 	address = models.TextField()
+	telepon = models.CharField(max_length=14, blank=True, null=True)
+	email = models.EmailField(blank=True, null=True)
+	catatan_khusus = models.TextField(blank=True, null=True)
 	statusOrder = models.CharField(max_length=1, blank=True, null=True)
 
 class DetailOrder(models.Model):
@@ -40,6 +43,7 @@ class TakenDistribution(models.Model):
 	distribution = models.ForeignKey(Distribution, on_delete=models.CASCADE, related_name='taken_distributions')
 	date = models.DateTimeField(auto_now_add=True)
 	status_antar = models.CharField(max_length=300, blank=True, null=True)
+	status_track = models.CharField(max_length=1, blank=True, null=True)
 	status = models.CharField(max_length=1, blank=True, null=True)
 	location = models.CharField(max_length=100, blank=True, null=True)
 
@@ -49,7 +53,7 @@ class DataLogPerjalanan(models.Model):
 	x = models.TextField(blank=True, null=True)
 	y = models.TextField(blank=True, null=True)
 	z = models.TextField(blank=True, null=True)
-	status = models.CharField(max_length=10, blank=True, null=True)
+	status = models.CharField(max_length=300, blank=True, null=True)
 	location = models.TextField(blank=True, null=True)
 
 class Manager(models.Model):
@@ -63,3 +67,5 @@ class PortalSignUp(models.Model):
 	port_kurir = models.CharField(max_length=1)
 	port_manager = models.CharField(max_length=1)
 	port_admin = models.CharField(max_length=1)
+	token_kurir = models.TextField(blank=True, null=True)
+	token_manager = models.TextField(blank=True, null=True) 

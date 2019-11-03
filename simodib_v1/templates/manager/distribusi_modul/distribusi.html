@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block aktif_distribusi %}
+	active
+{% endblock %}
+{% block aktif_newDistribution %}
 	class="active"
 {% endblock %}
 {% block content-header %}
@@ -11,8 +14,11 @@
 				<i class="fa fa-fw ti-home"></i> Dashboard
 			</a>
 		</li>
+		<li>
+			Distribusi
+		</li>
 		<li class="active">
-			Data Distribusi
+			Baru / Tambah Distribusi
 		</li>
 	</ol>
 {% endblock %}
@@ -65,7 +71,6 @@
 										<td>
 											<button type="button" class="btn btn-danger modalcolor hvr-wobble-horizontal" data-toggle="modal" data-target="#delete_modal" data-distribusi="{{distribusi.name}}_{{distribusi.pk}}" data-animate-modal-delete="jello" data-modalcolor="#ff6666">Delete</button>
 											<button type="button" class="btn btn-success hvr-wobble-horizontal" data-toggle="modal" data-target="#add_pesan_modal" data-add="{{distribusi.name}}_{{distribusi.pk}}" data-animate-modal="rotateInDownLeft">+Pesanan</button>
-											<a href="#"><button class="btn btn-info hvr-wobble-to-top-right">Detail</button></a>
 										</td>
 									</tr>
 									{% empty %}
@@ -111,25 +116,39 @@
 										<div class="row m-t-10">
 											<div class="col-md-6">
 												<div class="input-group">
-													<label class="sr-only" for="first-name">Nama/Kode Distribusi</label>
-													<input type="text" name="name" id="first-name"
-													placeholder="Nama/Kode Distribusi" class="form-control m-t-10">
+													<label class="sr-only" for="distribution_name">Nama/Kode Distribusi</label>
+													<input type="text" id="distribution_name_code"
+													placeholder="Nama/Kode Distribusi" class="form-control m-t-10" disabled>
+													<input type="hidden" name="name" id="distribution_name" class="form-control m-t-10">
 												</div>
 											</div>
 											<div class="col-md-6">
 												<div class="input-group">
 													<label class="sr-only" for="last-name">Pemesan</label>
 													<input type="text" name="ordered_by" id="last-name"
-													placeholder="pemesan" class="form-control m-t-10">
+													placeholder="Nama Pemesan" class="form-control m-t-10" required="">
 												</div>
 											</div>
 										</div>
 										<div class="row m-t-10">
 											<div class="col-md-12">
 												<div class="form-group">
+													<label class="sr-only" for="no-hp">No. Hp</label>
+													<input type="text" name="no_hp" id="no-hp" placeholder="No. Hp" class="form-control" required="">
+												</div>
+												<div class="form-group">
+													<label class="sr-only" for="email">
+														E-mail
+													</label>
+													<input type="text" name="email" id="email" placeholder="E-Mail (opsional)" class="form-control">
+												</div>
+												<div class="form-group">
 													<label class="sr-only" for="message">Alamat</label>
-													<input type="text" name="address" id="last-name"
-													placeholder="Alamat" class="form-control m-t-10">
+													<textarea name="address" rows="4" class="form-control resize_vertical" placeholder="Alamat" required=""></textarea>
+												</div>
+												<div class="form-group">
+													<label class="sr-only" for="catatan">Catatan</label>
+													<textarea name="catatan" rows="4" class="form-control resize_vertical" placeholder="Catatan Khusus (Opsional)"></textarea>
 												</div>
 											</div>
 										</div>
@@ -161,10 +180,10 @@
 											<div class="col-md-5">
 												<div class="form-group">
 													<label class="control-label" style="width: 100%;"><center style="margin-bottom: 10px;"><b>JENIS BERAS</b></center>
-														<select id="jenis_beras" name="name[]">
+														<select id="jenis_beras" name="name[]" required="">
 															<option>Pilih Jenis Beras</option>
 															{% for beras in dataBeras %}
-																<option value="{{beras.pk}}" title="{{beras.name}}_Rp.{{beras.price}}">{{beras.name}}</option>
+																<option value="{{beras.pk}}" title="{{beras.name}}_Rp.{{beras.price}}">{{beras.name}} - Rp.{{beras.price}}/Kwintal</option>
 															{% endfor %}
 														</select>
 													</label>
@@ -179,7 +198,7 @@
 												<div class="form-group">
 													<label class="control-label" style="width: 100%;"><center style="margin-bottom: 10px;"><b>JUMLAH</b></center>
 														<input type="text" class="form-control"
-														placeholder="Kwintal" name="value[]">
+														placeholder="Kwintal" name="value[]" required="">
 													</label>
 												</div>
 											</div>
@@ -249,33 +268,28 @@
 			});
 			// OUT MODAL
 			$('#add_pesan_modal').on('hide.bs.modal', function () {
-	        $("#add_pesan_modal").removeClass().addClass("modal fade animated rollOut");
-		    }).on('hidden.bs.modal', function () {
-		        $("#add_pesan_modal").removeClass().addClass("modal fade animated");
-		    });
-
-		    $('#delete_modal').on('hide.bs.modal', function () {
-	        $("#delete_modal").removeClass().addClass("modal fade animated rollOut");
-		    }).on('hidden.bs.modal', function () {
-		        $("#delete_modal").removeClass().addClass("modal fade animated");
-		    });
-		    // END OUT MODAL
-
+	$("#add_pesan_modal").removeClass().addClass("modal fade animated rollOut");
+		}).on('hidden.bs.modal', function () {
+		$("#add_pesan_modal").removeClass().addClass("modal fade animated");
+		});
+		$('#delete_modal').on('hide.bs.modal', function () {
+	$("#delete_modal").removeClass().addClass("modal fade animated rollOut");
+		}).on('hidden.bs.modal', function () {
+		$("#delete_modal").removeClass().addClass("modal fade animated");
+		});
+		// END OUT MODAL
 			$("[data-animate-modal-add]").on('click', function () {
-		        $("#add_form_modal").addClass($(this).attr("data-animate-modal-add"));
-		    });
-
+		$("#add_form_modal").addClass($(this).attr("data-animate-modal-add"));
+		});
 			$("[data-animate-modal]").on('click', function () {
-		        $("#add_pesan_modal").addClass($(this).attr("data-animate-modal"));
-		    });
-
-		    $("[data-animate-modal-delete]").on('click', function () {
-		        $("#delete_modal").addClass($(this).attr("data-animate-modal-delete"));
-		    });
-
-		    $(".modalcolor").on("click", function () {
-	        $("#delete_modal").find('.modal-header').css("background-color", $(this).attr("data-modalcolor"));
-	    	});
+		$("#add_pesan_modal").addClass($(this).attr("data-animate-modal"));
+		});
+		$("[data-animate-modal-delete]").on('click', function () {
+		$("#delete_modal").addClass($(this).attr("data-animate-modal-delete"));
+		});
+		$(".modalcolor").on("click", function () {
+	$("#delete_modal").find('.modal-header').css("background-color", $(this).attr("data-modalcolor"));
+		});
 		});
 	</script>
 	<style type="text/css">
@@ -309,6 +323,26 @@
 	<!-- Modal -->
 	<script type="text/javascript" src="{% static 'js/custom_js/advanced_modals.js' %}"></script>
 	<script type="text/javascript">
+		$('#add_form_modal').on('show.bs.modal', function (event) {
+			window.onload=document.getElementById("distribution_name");
+			var element_jam = document.getElementById("distribution_name");
+			window.onload=document.getElementById("distribution_name_code");
+			var kode_perjalanan = document.getElementById("distribution_name_code");
+			
+			var kode_distribusi = new String();
+			var tgl = new Date();
+			var hari = tgl.getDay();
+			var tanggal = tgl.getDate();
+			var bulan = tgl.getMonth();
+			var tahun = tgl.getFullYear();
+			var jam = tgl.getHours();
+			var menit = tgl.getMinutes();
+			var detik = tgl.getSeconds();
+			kode_distribusi = String(tanggal)+String(bulan)+String(jam)+String(detik)+String(menit)+String(hari);
+			console.log(kode_distribusi);
+			element_jam.value = kode_distribusi;
+			kode_perjalanan.value = kode_distribusi;
+		})
 		
 		$('#delete_modal').on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget)

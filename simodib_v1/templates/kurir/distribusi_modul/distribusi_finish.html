@@ -1,0 +1,415 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block aktif_distribusi_kurir %}
+	active
+{% endblock %}
+{% block distribusi_selesai %}
+	class="active"
+{% endblock %}
+{% block content-header %}
+	<h1>DATA DISTRIBUSI</h1>
+	<ol class="breadcrumb">
+		<li>
+			<a href="{% url 'home' %}">
+				<i class="fa fa-fw ti-home"></i> Dashboard
+			</a>
+		</li>
+		<li>
+			Distribusi
+		</li>
+		<li class="active">
+			Selesai
+		</li>
+	</ol>
+{% endblock %}
+{% block content %}
+	{% if message %}
+		<script>
+		$(document).ready(function() {
+		new PNotify({
+		type: 'success',
+		title: 'Message',
+		text: '{{message}}',
+		});
+		$("#jenis_beras").select2({
+				theme: "bootstrap",
+				width: "100%",
+			});
+		});
+		</script>
+	{% endif %}
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel filterable">
+				<div class="panel-heading clearfix  ">
+					<div class="panel-title pull-left">
+						<i class="ti-export"></i> <b>DATA DISTRIBUSI</b>
+					</div>
+					<div class="tools pull-right">
+						<!-- <button type="button" class="btn btn-success hvr-wobble-horizontal" data-toggle="modal" data-target="#add_form_modal" odata-animate-modal-add="bounceInLeft">Tambah</button> -->
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="table-responsive">
+						<table class="table table-striped table-bordered" id="table1">
+							<thead>
+								<tr>
+									<th>No</th>
+									<th>Nama/Kode Distribusi</th>
+									<th>Pemesan</th>
+									<th>Alamat Pemesan</th>
+									<th>Aksi</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for distribusi in jobList %}
+									<tr>
+										<td>{{ forloop.counter }}</td>
+										<td>{{ distribusi.distribution.name }}</td>
+										<td class="align-middle">{{ distribusi.distribution.ordered_by }}</td>
+										<td class="align-middle">{{ distribusi.distribution.address }}</td>
+										<td>
+											<button type="button" class="btn btn-danger modalcolor hvr-wobble-horizontal" data-toggle="modal" data-target="#delete_modal" data-distribusi="{{distribusi.name}}_{{distribusi.pk}}" data-animate-modal-delete="jello" data-modalcolor="#ff6666">Delete</button>
+											<button type="button" class="btn btn-success hvr-wobble-horizontal" data-toggle="modal" data-target="#add_pesan_modal" data-add="{{distribusi.name}}_{{distribusi.pk}}" data-animate-modal="rotateInDownLeft">PROSES</button>
+										</td>
+									</tr>
+									{% empty %}
+									<tr>
+										<td class="bg-light text-center font-italic" colspan="5">No Distribution Data List for your right now.</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+					
+					<div id="delete_modal" class="modal fade animated" role="dialog">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">×</button>
+									<h4 class="modal-title" id="delete_modalLabel">Delete Data</h4>
+									
+								</div>
+								<div class="modal-body">
+									<h4>delete text</h4>
+								</div>
+								<div class="modal-footer">
+									<form method="GET" action="{% url 'manager:deleteDistribusi' %}">
+										<input type="hidden" class="form-control" id="distribusi-name" name="id_distribusi">
+										<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+										<button type="submit" class="btn btn-danger">Hapus</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="add_form_modal" class="modal fade animated" role="dialog">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h4 class="modal-title">Tambah Data distribusi</h4>
+								</div>
+								<form role="form" method="POST" action="{% url 'manager:viewDistribusi' %}">
+									{% csrf_token %}
+									<div class="modal-body">
+										<div class="row m-t-10">
+											<div class="col-md-6">
+												<div class="input-group">
+													<label class="sr-only" for="distribution_name">Nama/Kode Distribusi</label>
+													<input type="text" id="distribution_name_code"
+													placeholder="Nama/Kode Distribusi" class="form-control m-t-10" disabled>
+													<input type="hidden" name="name" id="distribution_name" class="form-control m-t-10">
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="input-group">
+													<label class="sr-only" for="last-name">Pemesan</label>
+													<input type="text" name="ordered_by" id="last-name"
+													placeholder="Nama Pemesan" class="form-control m-t-10" required="">
+												</div>
+											</div>
+										</div>
+										<div class="row m-t-10">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label class="sr-only" for="no-hp">No. Hp</label>
+													<input type="text" name="no_hp" id="no-hp" placeholder="No. Hp" class="form-control" required="">
+												</div>
+												<div class="form-group">
+													<label class="sr-only" for="email">
+														E-mail
+													</label>
+													<input type="text" name="email" id="email" placeholder="E-Mail (opsional)" class="form-control">
+												</div>
+												<div class="form-group">
+													<label class="sr-only" for="message">Alamat</label>
+													<textarea name="address" rows="4" class="form-control resize_vertical" placeholder="Alamat" required=""></textarea>
+												</div>
+												<div class="form-group">
+													<label class="sr-only" for="catatan">Catatan</label>
+													<textarea name="catatan" rows="4" class="form-control resize_vertical" placeholder="Catatan Khusus (Opsional)"></textarea>
+												</div>
+											</div>
+										</div>
+									</div>
+									
+									<div class="modal-footer">
+										<button type="submit" class="btn btn-succes">Submit</button>
+										<button type="reset" class="btn btn-default">Reset</button>
+										<button type="button" class="btn btn-default" data-dismiss="modal">
+										Close
+										</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div id="add_pesan_modal" class="modal fade animated" role="dialog">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h4 class="modal-title">Input Data Pesanan</h4>
+								</div>
+								<form id="nonsingle-rice" role="form" method="POST" action="{% url 'manager:addPesanan' %}">
+									{% csrf_token %}
+									<input id="id_dist" type="hidden" name="id_distribusi">
+									<div class="modal-body">
+										<div id="pesanan0" class="row">
+											<div class="col-md-5">
+												<div class="form-group">
+													<label class="control-label" style="width: 100%;"><center style="margin-bottom: 10px;"><b>JENIS BERAS</b></center>
+														<select id="jenis_beras" name="name[]" required="">
+															<option>Pilih Jenis Beras</option>
+															{% for beras in dataBeras %}
+																<option value="{{beras.pk}}" title="{{beras.name}}_Rp.{{beras.price}}">{{beras.name}} - Rp.{{beras.price}}/Kwintal</option>
+															{% endfor %}
+														</select>
+													</label>
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="trip-type-multi">
+													<i class="fa ti-arrow-right icon"></i>
+												</div>
+											</div>
+											<div class="col-md-5">
+												<div class="form-group">
+													<label class="control-label" style="width: 100%;"><center style="margin-bottom: 10px;"><b>JUMLAH</b></center>
+														<input type="text" class="form-control"
+														placeholder="Kwintal" name="value[]" required="">
+													</label>
+												</div>
+											</div>
+										</div>
+									</div>
+									
+									<div class="modal-footer">
+										<div class="col-sm-6">
+											<a class="btn btn-default" id="add-rice">
+												<i class="fa fa-fw ti-plus"></i> Add Rice
+											</a>
+											<label>Add Rices(Upto 5)</label>
+										</div>
+										<button type="submit" class="btn btn-succes">Submit Pesanan</button>
+										<button type="button" class="btn btn-default" data-dismiss="modal">
+										Close
+										</button>
+										
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block extraCss %}
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Data Tables -->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/dataTables.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/buttons.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/colReorder.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/dataTables.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/rowReorder.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/buttons.bootstrap.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/scroller.bootstrap.css' %}">
+	<!-- End Data Tables -->
+	<!-- Button -->
+	<link href="{% static 'vendors/hover/css/hover-min.css' %}" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'vendors/laddabootstrap/css/ladda-themeless.min.css' %}">
+	<link href="{% static 'css/buttons_sass.css' %}" rel="stylesheet">
+	<link href="{% static 'css/advbuttons.css' %}" rel="stylesheet">
+	<!-- End Button -->
+	<!-- Modal -->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/animate/animate.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/custom_css/advanced_modals.css' %}">
+	<!-- End Modal -->
+	<!-- PNotify -->
+	<link rel="stylesheet" href="{% static 'vendors/animate/animate.min.css' %}"/>
+	<link rel="stylesheet" href="{% static 'vendors/pnotify/css/pnotify.css' %}">
+	<link href="{% static 'vendors/pnotify/css/pnotify.brighttheme.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'vendors/pnotify/css/pnotify.buttons.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'vendors/pnotify/css/pnotify.mobile.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'vendors/pnotify/css/pnotify.history.css' %}" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/custom_css/toastr_notificatons.css' %}">
+	<!-- End PNotify -->
+	<!-- SELECT 2 -->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/select2/css/select2.min.css' %}">
+	<link href="{% static 'vendors/select2/css/select2-bootstrap.css' %}" rel="stylesheet" type="text/css">
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("#jenis_beras").select2({
+				theme: "bootstrap",
+				width: "100%",
+			});
+			// OUT MODAL
+			$('#add_pesan_modal').on('hide.bs.modal', function () {
+	$("#add_pesan_modal").removeClass().addClass("modal fade animated rollOut");
+		}).on('hidden.bs.modal', function () {
+		$("#add_pesan_modal").removeClass().addClass("modal fade animated");
+		});
+		$('#delete_modal').on('hide.bs.modal', function () {
+	$("#delete_modal").removeClass().addClass("modal fade animated rollOut");
+		}).on('hidden.bs.modal', function () {
+		$("#delete_modal").removeClass().addClass("modal fade animated");
+		});
+		// END OUT MODAL
+			$("[data-animate-modal-add]").on('click', function () {
+		$("#add_form_modal").addClass($(this).attr("data-animate-modal-add"));
+		});
+			$("[data-animate-modal]").on('click', function () {
+		$("#add_pesan_modal").addClass($(this).attr("data-animate-modal"));
+		});
+		$("[data-animate-modal-delete]").on('click', function () {
+		$("#delete_modal").addClass($(this).attr("data-animate-modal-delete"));
+		});
+		$(".modalcolor").on("click", function () {
+	$("#delete_modal").find('.modal-header').css("background-color", $(this).attr("data-modalcolor"));
+		});
+		});
+	</script>
+	<style type="text/css">
+		span:select2{
+			width: 100%;
+		}
+	</style>
+	<!-- END SELECT 2 -->
+{% endblock %}
+{% block extraJs %}
+	<!-- dataTables -->
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/jquery.dataTables.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.bootstrap.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.buttons.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.colReorder.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.responsive.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.rowReorder.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.colVis.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.html5.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.bootstrap.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.print.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.scroller.js' %}"></script>
+	<script src="{% static 'js/custom_js/advanced_datatables.js' %}" type="text/javascript"></script>
+	<!-- End dataTables -->
+	<!-- Button -->
+	<script type="text/javascript" src="{% static 'vendors/Buttons/js/buttons.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/spin.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/ladda.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/custom_js/button_main.js' %}"></script>
+	<!-- End Button -->
+	<!-- Modal -->
+	<script type="text/javascript" src="{% static 'js/custom_js/advanced_modals.js' %}"></script>
+	<script type="text/javascript">
+		$('#add_form_modal').on('show.bs.modal', function (event) {
+			window.onload=document.getElementById("distribution_name");
+			var element_jam = document.getElementById("distribution_name");
+			window.onload=document.getElementById("distribution_name_code");
+			var kode_perjalanan = document.getElementById("distribution_name_code");
+			
+			var kode_distribusi = new String();
+			var tgl = new Date();
+			var hari = tgl.getDay();
+			var tanggal = tgl.getDate();
+			var bulan = tgl.getMonth();
+			var tahun = tgl.getFullYear();
+			var jam = tgl.getHours();
+			var menit = tgl.getMinutes();
+			var detik = tgl.getSeconds();
+			kode_distribusi = String(tanggal)+String(bulan)+String(jam)+String(detik)+String(menit)+String(hari);
+			console.log(kode_distribusi);
+			element_jam.value = kode_distribusi;
+			kode_perjalanan.value = kode_distribusi;
+		})
+		
+		$('#delete_modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget)
+		var dataRice = button.data('distribusi')
+		var arrdistribusi = dataRice.split("_");
+		var namadistribusi = arrdistribusi[0];
+		var iddistribusi = arrdistribusi[1];
+		var modal = $(this)
+		modal.find('.modal-title').text('Delete distribusi ' + namadistribusi)
+		modal.find('.modal-body h4').text('Yakin Ingin Menghapus ' + namadistribusi + '?')
+		modal.find('.modal-footer input').val(iddistribusi)
+		})
+		$('#add_pesan_modal').on('show.bs.modal', function (event) {
+			$("#jenis_beras").select2({
+				theme: "bootstrap",
+				width: "100%",
+			});
+		var button_add = $(event.relatedTarget)
+		var dataRiceAdd = button_add.data('add')
+		var arrDistribusi = dataRiceAdd.split("_");
+		var namaDistribusi = arrDistribusi[0];
+		var idDistribusi = arrDistribusi[1];
+		var modal = $(this)
+		modal.find('.modal-title').text('Tambah Pesanan Untuk Order ' + namaDistribusi)
+		modal.find('#nonsingle-rice #id_dist').val(idDistribusi)
+		// modal.find('.modal-footer input').val(iddistribusi)
+		})
+		
+		// adding mutirice
+		var i = 1;
+		// id di button untuk nambahin
+		$('#add-rice').on('click', function () {
+		if (i < 5) {
+			var jenis_barang = "<div class='col-md-5'><div class='form-group'><select id='jenis_beras"+i+"' name='name[]'><option>Pilih Jenis Beras</option>{% for beras in dataBeras %}<option value='{{beras.pk}}' title='{{beras.name}}_Rp.{{beras.price}}'>{{beras.name}}</option>{% endfor %}</select></div></div>";
+			var icon_arrow = "<div class='col-md-1'> <div class='trip-type-multi'> <i class='fa ti-arrow-right icon'></i> </div> </div>";
+			var jumlah_barang = "<div class='col-md-5'><div class='form-group'><input type='text' class='form-control' placeholder='Kwintal' name='value[]'></div></div>";
+			var tombol_remove = "<div class='col-md-1'><span class=''><i class='fa fa-fw ti-minus remove-rice'></i></span></div>";
+			//id form , find nama div nya, append di div class row nya
+			$('#nonsingle-rice').find('.modal-body').append('<div id="pesanan0" class="row">' + jenis_barang + icon_arrow + jumlah_barang + tombol_remove + '</div>');
+			$("#jenis_beras"+i).select2({
+				theme: "bootstrap",
+				width: "100%",
+			});
+			i += 1;
+		}
+		});
+		$('body').on('click', '.remove-rice', function (e) {
+			e.preventDefault();
+			i--;
+			//nama class nya di rownya itu loh
+			$(this).closest("#pesanan0").remove();
+		});
+	</script>
+	<!-- End Modal -->
+	<!-- PNotify -->
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.animate.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.buttons.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.confirm.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.nonblock.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.mobile.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.desktop.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.history.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.callbacks.js' %}"></script>
+	<script src="{% static 'js/custom_js/notifications.js' %}"></script>
+	<!-- End Notify -->
+	<!-- SELECT 2 -->
+	<script type="text/javascript" src="{% static 'vendors/select2/js/select2.js' %}"></script>
+	<!-- END SELECT 2 -->
+{% endblock %}

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block aktif_distribution %}
-	class="active"
+	active
 {% endblock %}
 {% block aktif_unfinish %}
 	class="active"
@@ -14,8 +14,11 @@
 				<i class="fa fa-fw ti-home"></i> Dashboard
 			</a>
 		</li>
+		<li>
+			Distribusi
+		</li>
 		<li class="active">
-			Data Distribusi
+			Belum Selesai (+Kurir)
 		</li>
 	</ol>
 {% endblock %}
@@ -23,6 +26,7 @@
 	{% if message %}
 		<script>
 		$(document).ready(function() {
+		$('#table_unfinished').DataTable();
 		new PNotify({
 		type: 'success',
 		title: 'Message',
@@ -48,7 +52,7 @@
 				</div>
 				<div class="panel-body">
 					<div class="table-responsive">
-						<table class="table table-striped table-bordered" id="table1">
+						<table class="table table-striped table-bordered" id="table_unfinished">
 							<thead>
 								<tr>
 									<th>No</th>
@@ -66,7 +70,7 @@
 										<td class="align-middle">{{ distribusi.ordered_by }}</td>
 										<td class="align-middle">{{ distribusi.address }}</td>
 										<td>
-											<button type="button" class="btn btn-danger modalcolor hvr-wobble-horizontal" data-toggle="modal" data-target="#batal_modal" data-distribusi="{{distribusi.name}}_{{distribusi.pk}}" data-animate-modal-delete="jello" data-modalcolor="#ff6666">BATALKAN</button>
+											<button type="button" class="btn btn-danger modalcolor hvr-wobble-horizontal" data-toggle="modal" data-target="#hapus_modal" data-distribusi="{{distribusi.name}}_{{distribusi.pk}}" data-animate-modal-delete="jello" data-modalcolor="#ff6666">HAPUS</button>
 											<button type="button" class="btn btn-success hvr-wobble-horizontal" data-toggle="modal" data-target="#add_kurir_modal" data-add="{{distribusi.name}}_{{distribusi.pk}}" data-animate-modal="rotateInDownLeft">+Kurir</button>
 											<a href="{% url 'manager:viewDistribusiDetail' pk=distribusi.pk %}"><button class="btn btn-info hvr-wobble-to-top-right">Detail</button></a>
 										</td>
@@ -80,22 +84,22 @@
 						</table>
 					</div>
 					
-					<div id="batal_modal" class="modal fade animated" role="dialog">
+					<div id="hapus_modal" class="modal fade animated" role="dialog">
 						<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
 									<button type="button" class="close" data-dismiss="modal">×</button>
-									<h4 class="modal-title" id="delete_modalLabel">Batal Data</h4>
+									<h4 class="modal-title" id="delete_modalLabel">Hapus Data</h4>
 									
 								</div>
 								<div class="modal-body">
-									<h4>batal text</h4>
+									<h4>Yakin ingin menghapus Distribusi ini?</h4>
 								</div>
 								<div class="modal-footer">
 									<form method="GET" action="{% url 'manager:deleteDistribusi' %}">
 										<input type="hidden" class="form-control" id="distribusi-name" name="id_distribusi">
-										<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-										<button type="submit" class="btn btn-danger">BATALKAN DISTRIBUSI</button>
+										<button type="button" class="btn btn-secondary" data-dismiss="modal">BATALKAN</button>
+										<button type="submit" class="btn btn-danger">HAPUS DISTRIBUSI</button>
 									</form>
 								</div>
 							</div>
@@ -148,7 +152,7 @@
 								</form>
 							</div>
 						</div>
-					</div>
+					</div> 
 					<div id="add_kurir_modal" class="modal fade animated" role="dialog">
 						<div class="modal-dialog">
 							<div class="modal-content">
@@ -156,7 +160,7 @@
 									<button type="button" class="close" data-dismiss="modal">&times;</button>
 									<h4 class="modal-title">Input Data Kurir</h4>
 								</div>
-								<form id="nonsingle-rice" role="form" method="POST" action="{% url 'manager:addPesanan' %}">
+								<form id="add_kurir_form" role="form">
 									{% csrf_token %}
 									<input id="id_dist" type="hidden" name="id_distribusi">
 									<div class="modal-body">
@@ -252,10 +256,10 @@
 		        $("#add_kurir_modal").removeClass().addClass("modal fade animated");
 		    });
 
-		    $('#batal_modal').on('hide.bs.modal', function () {
-	        $("#batal_modal").removeClass().addClass("modal fade animated rollOut");
+		    $('#hapus_modal').on('hide.bs.modal', function () {
+	        $("#hapus_modal").removeClass().addClass("modal fade animated rollOut");
 		    }).on('hidden.bs.modal', function () {
-		        $("#batal_modal").removeClass().addClass("modal fade animated");
+		        $("#hapus_modal").removeClass().addClass("modal fade animated");
 		    });
 		    // END OUT MODAL
 
@@ -268,11 +272,11 @@
 		    });
 
 		    $("[data-animate-modal-delete]").on('click', function () {
-		        $("#batal_modal").addClass($(this).attr("data-animate-modal-delete"));
+		        $("#hapus_modal").addClass($(this).attr("data-animate-modal-delete"));
 		    });
 
 		    $(".modalcolor").on("click", function () {
-	        $("#batal_modal").find('.modal-header').css("background-color", $(this).attr("data-modalcolor"));
+	        $("#hapus_modal").find('.modal-header').css("background-color", $(this).attr("data-modalcolor"));
 	    	});
 		});
 	</script>
@@ -308,7 +312,7 @@
 	<script type="text/javascript" src="{% static 'js/custom_js/advanced_modals.js' %}"></script>
 	<script type="text/javascript">
 		
-		$('#batal_modal').on('show.bs.modal', function (event) {
+		$('#hapus_modal').on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget)
 		var dataRice = button.data('distribusi')
 		var arrdistribusi = dataRice.split("_");
@@ -316,7 +320,7 @@
 		var iddistribusi = arrdistribusi[1];
 		var modal = $(this)
 		modal.find('.modal-title').text('Batalkan distribusi ' + namadistribusi)
-		modal.find('.modal-body h4').text('Yakin Ingin Membatalkan ' + namadistribusi + '? Setelah menekan batal maka distribusi akan di pindahkan ke list awal, sehingga distribusi ini tidak akan terlihat bagi driver/kurir')
+		modal.find('.modal-body h4').text('Yakin Ingin Menghapus ' + namadistribusi + '? Setelah menekan Hapus maka distribusi tidak bisa dikembalikan, sehingga distribusi ini tidak akan terlihat bagi driver/kurir')
 		modal.find('.modal-footer input').val(iddistribusi)
 		})
 		$('#add_kurir_modal').on('show.bs.modal', function (event) {
@@ -361,6 +365,45 @@
 			//nama class nya di rownya itu loh
 			$(this).closest("#pesanan0").remove();
 		});
+
+		$(document).on('submit','#add_kurir_form',function(e){
+			e.preventDefault();
+			$.ajax({
+				type:'POST',
+				url:"{% url 'manager:addKurir' %}",
+				data:{
+					id_kurir:$('#data_kurir').val(),
+					id_distribusi:$('#distribusi_id').val(),
+					csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+				},
+				dataType:  'json',
+				success:function(data){
+					let rows =  '';
+					var noUrut = 1;
+					var lastData = data.distribusi.length;
+					data.distribusi.forEach(dist => {
+						pk=dist.id;
+						rows += `
+						<tr>
+							<td>${noUrut}</td>
+							<td>${dist.name}</td>
+							<td class="align-middle">${dist.ordered_by}</td>
+							<td class="align-middle">${dist.address}</td>
+							<td>
+								<button type="button" class="btn btn-danger modalcolor hvr-wobble-horizontal" data-toggle="modal" data-target="#hapus_modal" data-distribusi="${dist.name}_${dist.id}" data-animate-modal-delete="jello" data-modalcolor="#ff6666">BATALKAN</button>
+								<button type="button" class="btn btn-success hvr-wobble-horizontal" data-toggle="modal" data-target="#add_kurir_modal" data-add="${dist.name}_${dist.id}" data-animate-modal="rotateInDownLeft">+Kurir</button>
+								<a href="http://simodib2.com:8000/manager/distribusi/${dist.id}/"><button class="btn btn-info hvr-wobble-to-top-right">Detail</button></a>
+							</td>
+						</tr>`;
+						noUrut = noUrut + 1;
+					});
+					$('#table_unfinished > tbody').html(rows);
+					$("#add_kurir_modal")[0].reset();
+					$('#add_kurir_form').modal('hide');
+				}
+			})
+		});
+
 	</script>
 	<!-- End Modal -->
 	<!-- PNotify -->

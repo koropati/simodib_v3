@@ -4,17 +4,53 @@
 	<div class="row">
 		<div class="profile-widget text-center">
 			<div class="bg-landing-page bg-profile"></div>
-			<img src="{% static 'img/logo_aja.png' %}" class="thumb-lg img-circle img-thumbnail" alt="img" height="200" width="200">
-			<h4>Guest User</h4>
-			<h6>You Must Login to get some Access</h6>
-			<center>
-			<a href="{% url 'login' %}" class="button button-pill button-royal-flat hvr-push">
-				<span class="fa fa-fw fa-sign-in"></span> Login
-			</a>
-			</center>
-			<p class="m-t-20 clearfix p-10">It has survived not only five centuries, but also the
-				leap into
-			electronic typesetting.</p>
+			<div class="col-md-6">
+				<img src="{% static 'img/logo_aja.png' %}" class="thumb-lg img-circle img-thumbnail" alt="img" height="200" width="200">
+				<h4>Guest User</h4>
+				<h6>You Must Login to get some Access</h6>
+				<center>
+				<a href="{% url 'login' %}" class="button button-pill button-royal-flat hvr-push">
+					<span class="fa fa-fw fa-sign-in"></span> Login
+				</a>
+				</center>
+				<p class="m-t-20 clearfix p-10">It has survived not only five centuries, but also the
+					leap into
+				electronic typesetting.</p>
+			</div>
+			<div class="col-md-6">
+				<br>
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<h3 class="panel-title">Cari Pengiriman</h3>
+					</div>
+					<div class="panel-body">
+						<div class="col-sm-8">
+							<div class="text-center mbl m-t-10">
+								<img src="{% static 'img/loupe.png' %}" alt="img" height="120" width="120">
+							</div>
+							<br>
+							<form>
+								<div class="input-group">
+									<input type="text" class="form-control" placeholder="Masukan Kode Pengiriman">
+									<span class="input-group-btn">
+										<button class="btn btn-info" type="submit">Cari</button>
+									</span>
+								</div>
+							</form>
+							
+						</div>
+						<div class="col-sm-4">
+							<div class="alert alert-info small m-t-10">
+								<p class="text-justify">
+									Gunakan Fitur pencarian pengiriman untuk melakukan pengecheckan kiriman secara berkala. Mendapatkan informasi pengiriman, dan lokasi kurir.
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
 			<div class="row">
 				<div class="col-md-12">
 					<div class="col-sm-6 col-md-6 col-lg-3">
@@ -95,7 +131,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="">
+			<div class="" id="footer" style=" position: absolute; bottom: 0; width: 100%;">
 				<div class="social_icons p-10 text-white bg-landing-page">
 					<i class="ti-facebook" aria-hidden="true"></i>
 					<i class="ti-twitter" aria-hidden="true"></i>

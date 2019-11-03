@@ -25,7 +25,7 @@ SECRET_KEY = 'h4h+9dvu*+xffqo^r97wc3q6_0me5lgnbw^aml=ntnuu*(b6u0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1','.pythonanywhere.com']
+ALLOWED_HOSTS = ['localhost','127.0.0.1','.pythonanywhere.com','simodib.com','simodib2.com','192.168.137.1']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'bootstrap_modal_forms',
     'simodib_v1',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -134,3 +135,5 @@ LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'

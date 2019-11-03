@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block aktif_distribusi %}
+	active
+{% endblock %}
+{% block aktif_onprocess %}
+	class="active"
+{% endblock %}
+{% block content-header %}
+	<h1>DALAM PROSES DISTRIBUSI</h1>
+	<ol class="breadcrumb">
+		<li>
+			<a href="{% url 'home' %}">
+				<i class="fa fa-fw ti-home"></i> Dashboard
+			</a>
+		</li>
+		<li>
+			Distribusi
+		</li>
+		<li>
+			On Process
+		</li>
+		<li class="active">
+			Track
+		</li>
+	</ol>
+{% endblock %}
+{% block content %}
+	{% if message %}
+		<script>
+		$(document).ready(function() {
+		new PNotify({
+		type: 'success',
+		title: 'Message',
+		text: '{{message}}',
+		});
+		$("#data_kurir").select2({
+				theme: "bootstrap",
+				width: "100%",
+			});
+		});
+		</script>
+	{% endif %}
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel filterable">
+				<div class="panel-heading clearfix  ">
+					<div class="panel-title pull-left">
+						<i class="ti-export"></i> <b>TRACK PROSES DISTRIBUSI</b>
+					</div>
+					<div class="tools pull-right">
+						<!-- <button type="button" class="btn btn-success hvr-wobble-horizontal" data-toggle="modal" data-target="#add_form_modal" odata-animate-modal-add="bounceInLeft">Tambah</button> -->
+						<input type=button value="KEMBALI" class="button button-pill button-caution-flat hvr-pulse-shrink" onClick="javascript:history.go(-1);">
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-md-8">
+							<div class="panel">
+								<div class="panel-heading">
+									<h4 class="panel-title">
+									<i class="ti-location-arrow"></i> Distributions Tracking ID: {{takenDistribusi.distribution.name}}
+									</h4>
+								</div>
+								<div class="panel-body" style="padding:10px !important;">
+									<div id="map_distribusi"></div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label for="status_distribusi" class="control-label">
+													Latitude
+												</label>
+												<input type="text" id="lat_distribusi" class="form-control" disabled="">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label for="status_distribusi" class="control-label">
+													Longitude
+												</label>
+												<input type="text" id="lon_distribusi" class="form-control" disabled="">
+											</div>
+										</div>
+									</div>	
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group">
+								<label for="status_distribusi" class="control-label">
+									Status
+								</label>
+								<div class="input-group">
+									<span class="input-group-addon">
+										<i class="fa fa-fw ti-pencil"></i>
+									</span>
+									<input type="text" id="status_distribusi" class="form-control" placeholder="Status" value="{{takenDistribusi.status_antar}}" disabled="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="kurir_distribusi" class="control-label">
+									Kurir
+								</label>
+								<div class="input-group">
+									<span class="input-group-addon">
+										<i class="fa fa-fw ti-user"></i>
+									</span>
+									<input type="text" id="kurir_distribusi" class="form-control" placeholder="Status" value="{{takenDistribusi.kurir.user.first_name}} {{takenDistribusi.kurir.user.last_name}}" disabled="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="kurir_distribusi" class="control-label">
+									Pemesan
+								</label>
+								<div class="input-group">
+									<span class="input-group-addon">
+										<i class="fa fa-fw ti-user"></i>
+									</span>
+									<input type="text" id="kurir_distribusi" class="form-control" placeholder="Status" value="{{takenDistribusi.distribution.ordered_by}}" disabled="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="log_distribusi" class="control-label">
+									Data Log Perjalanan
+								</label>
+								
+								<select id="log_distribusi" name="log_distribusi" class="form-control" size="5" multiple="">
+									{% for log in logPerjalanan %}
+										<option>{{ forloop.counter }}. {{log.date}}, {{log.status}}, {{log.location}}</option>
+										{% empty %}
+										<option>Belum ada Log Perjalanan</option>
+									{% endfor %}
+								</select>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- DISTRIBUSI MAPS -->
+	<script type="text/javascript">
+		//Making a Map and Tiles
+		const mymap = L.map('map_distribusi').setView([0, 0], 1);
+		const attribution = '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors';
+		const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+		const tiles = L.tileLayer(tileUrl, {attribution});
+		tiles.addTo(mymap);
+		//Making a marker with a custom icon
+		const truckIcon = L.icon({
+			iconUrl: "{% static 'img/truck.png' %}",
+			iconSize: [40, 32],
+			iconAnchor: [25, 16]
+		});
+		const myMarker = L.marker([0, 0], {icon: truckIcon}).addTo(mymap);
+		const api_url = 'https://api.wheretheiss.at/v1/satellites/25544';
+		let firstTime = true;
+		async function getKurir(){
+			const response = await fetch(api_url);
+			const data = await response.json();
+			const {latitude, longitude} = data;
+			myMarker.setLatLng([latitude, longitude]);
+			if (firstTime) {
+				mymap.setView([latitude, longitude], 3);
+				firstTime=false;
+							}
+			document.getElementById('lat_distribusi').value = latitude+'°';
+			document.getElementById('lon_distribusi').value = longitude+'°';
+		}
+		getKurir();
+		setInterval(getKurir,1000);
+	</script>
+	<!-- END DISTRIBUSI MAPS -->
+{% endblock %}
+{% block extraCss %}
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- LEAFLET MAPS -->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+		integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+		crossorigin=""/>
+		<!-- Make sure you put this AFTER Leaflet's CSS -->
+		<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+		integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+		crossorigin="">
+		</script>
+		<style type="text/css">
+			#map_distribusi{
+				height: 300px;
+			}
+		</style>
+		<!-- END LEFLET MAPS -->
+		
+		<!-- Data Tables -->
+		<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/dataTables.bootstrap.css' %}"/>
+		<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/buttons.bootstrap.css' %}"/>
+		<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/colReorder.bootstrap.css' %}"/>
+		<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/dataTables.bootstrap.css' %}"/>
+		<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/rowReorder.bootstrap.css' %}"/>
+		<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/buttons.bootstrap.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/scroller.bootstrap.css' %}">
+		<!-- End Data Tables -->
+		<!-- Button -->
+		<link href="{% static 'vendors/hover/css/hover-min.css' %}" rel="stylesheet">
+		<link rel="stylesheet" href="{% static 'vendors/laddabootstrap/css/ladda-themeless.min.css' %}">
+		<link href="{% static 'css/buttons_sass.css' %}" rel="stylesheet">
+		<link href="{% static 'css/advbuttons.css' %}" rel="stylesheet">
+		<!-- End Button -->
+		<!-- Modal -->
+		<link rel="stylesheet" type="text/css" href="{% static 'vendors/animate/animate.min.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/custom_css/advanced_modals.css' %}">
+		<!-- End Modal -->
+		<!-- PNotify -->
+		<link rel="stylesheet" href="{% static 'vendors/animate/animate.min.css' %}"/>
+		<link rel="stylesheet" href="{% static 'vendors/pnotify/css/pnotify.css' %}">
+		<link href="{% static 'vendors/pnotify/css/pnotify.brighttheme.css' %}" rel="stylesheet" type="text/css"/>
+		<link href="{% static 'vendors/pnotify/css/pnotify.buttons.css' %}" rel="stylesheet" type="text/css"/>
+		<link href="{% static 'vendors/pnotify/css/pnotify.mobile.css' %}" rel="stylesheet" type="text/css"/>
+		<link href="{% static 'vendors/pnotify/css/pnotify.history.css' %}" rel="stylesheet" type="text/css"/>
+		<link rel="stylesheet" type="text/css" href="{% static 'css/custom_css/toastr_notificatons.css' %}">
+		<!-- End PNotify -->
+	{% endblock %}
+	{% block extraJs %}
+		<!-- dataTables -->
+		<script type="text/javascript" src="{% static 'vendors/datatables/js/jquery.dataTables.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.bootstrap.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.buttons.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.colReorder.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.responsive.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.rowReorder.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.colVis.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.html5.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.bootstrap.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.print.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.scroller.js' %}"></script>
+		<script src="{% static 'js/custom_js/advanced_datatables.js' %}" type="text/javascript"></script>
+		<!-- End dataTables -->
+		<!-- Button -->
+		<script type="text/javascript" src="{% static 'vendors/Buttons/js/buttons.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/spin.min.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/ladda.min.js' %}"></script>
+		<script type="text/javascript" src="{% static 'js/custom_js/button_main.js' %}"></script>
+		<!-- End Button -->
+		<!-- PNotify -->
+		<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.animate.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.buttons.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.confirm.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.nonblock.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.mobile.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.desktop.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.history.js' %}"></script>
+		<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.callbacks.js' %}"></script>
+		<script src="{% static 'js/custom_js/notifications.js' %}"></script>
+		<!-- End Notify -->
+	{% endblock %}

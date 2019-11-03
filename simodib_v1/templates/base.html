@@ -83,7 +83,7 @@
 										{% if user.is_authenticated and user.is_manager %}
 											<p>User type : Manager</p>
 											{% elif user.is_authenticated and user.is_kurir %}
-											<p>User type : Manager</p>
+											<p>User type : Kurir</p>
 										{% else %}
 											<p>User type : Guest</p>
 										{% endif %}
@@ -179,28 +179,28 @@
 										</a>
 									</li>
 									<!-- ======================================================= -->
-									<li class="menu-dropdown">
+									<li class="menu-dropdown {% block aktif_distribusi_kurir %} {% endblock %}">
 										<a href="javascript:void(0)">
 											<i class="menu-icon ti-check-box"></i>
-											<span>Job Distribution</span>
+											<span>Distribusi</span>
 											<span class="fa arrow"></span>
 										</a>
 										<ul class="sub-menu">
-											<li {% block aktif_unpicked %} {% endblock %}>
-											<a href="#">
-												<i class="fa fa-fw ti-receipt"></i> Un Picked
+											<li {% block belum_diproses %} {% endblock %}>
+											<a href="{% url 'kurir:viewUnfinished_kurir' %}">
+												<i class="fa fa-fw ti-receipt"></i> Belum diproses
 												<span class="fa arrow"></span>
 											</a>
 										</li>
-										<li {% block aktif_now %} {% endblock %}>
-										<a href="#">
-											<i class="fa fa-fw ti-receipt"></i> Now Distribution
+										<li {% block dalam_proses %} {% endblock %}>
+										<a href="{% url 'kurir:viewOnprocess_kurir' %}">
+											<i class="fa fa-fw ti-receipt"></i> Dalam Proses
 											<span class="fa arrow"></span>
 										</a>
 									</li>
-									<li {% block aktif_finished %} {% endblock %}>
-									<a href="#">
-										<i class="fa fa-fw ti-receipt"></i> Finished
+									<li {% block distribusi_selesai %} {% endblock %}>
+									<a href="{% url 'kurir:viewFinished_kurir' %}">
+										<i class="fa fa-fw ti-receipt"></i> Distribusi Selesai
 										<span class="fa arrow"></span>
 									</a>
 								</li>
@@ -222,7 +222,7 @@
 					</a>
 				</li>
 				<!-- ======================================================= -->
-				<li class="menu-dropdown" {% block aktif_distribution %} {% endblock %}>
+				<li class="menu-dropdown {% block aktif_distribution %} {% endblock %}" >
 					<a href="javascript:void(0)">
 						<i class="menu-icon ti-check-box"></i>
 						<span>Distribusi</span>
@@ -231,22 +231,29 @@
 					<ul class="sub-menu">
 						<li {% block aktif_newDistribution %} {% endblock %}>
 						<a href="{% url 'manager:viewDistribusi' %}">
-							<i class="fa fa-fw ti-receipt"></i> New Distribution
+							<i class="fa fa-fw ti-receipt"></i> Distribusi Baru
 							<span class="fa arrow"></span>
 						</a>
 					</li>
-					<li {% block aktif_finish %} {% endblock %}>
-					<a href="#">
-						<i class="fa fa-fw ti-receipt"></i> Finished
-						<span class="fa arrow"></span>
-					</a>
-				</li>
-				<li {% block aktif_unfinish %} {% endblock %}>
+					<li {% block aktif_unfinish %} {% endblock %}>
 				<a href="{% url 'manager:viewUnfinished' %}">
-					<i class="fa fa-fw ti-receipt"></i> Unfinished
+					<i class="fa fa-fw ti-receipt"></i> Belum Selesai (+Kurir)
 					<span class="fa arrow"></span>
 				</a>
 			</li>
+			<li {% block aktif_onprocess %} {% endblock %}>
+				<a href="{% url 'manager:viewOnprocess' %}">
+					<i class="fa fa-fw ti-receipt"></i> Dalam Proses
+					<span class="fa arrow"></span>
+				</a>
+			</li>
+					<li {% block aktif_finish %} {% endblock %}>
+					<a href="{% url 'manager:viewFinished' %}">
+						<i class="fa fa-fw ti-receipt"></i> Selesai
+						<span class="fa arrow"></span>
+					</a>
+				</li>
+				
 		</ul>
 	</li>
 	<!-- ======================================================= -->

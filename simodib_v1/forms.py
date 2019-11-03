@@ -9,6 +9,7 @@ class KurirSignUpForm(UserCreationForm):
     email = forms.EmailField()
     no_hp = forms.CharField()
     alamat = forms.CharField()
+    token = forms.CharField()
 
     class Meta(UserCreationForm.Meta):
         model = User
