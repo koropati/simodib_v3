@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from simodib_v1.views import company, kurir, manager
+from simodib_v1.views import company, kurir, manager, home
 # path('accounts/signup/kurir/', kurir.KurirSignUpView.as_view(), name='kurir_signup'),
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,4 +25,5 @@ urlpatterns = [
     path('accounts/signup/',company.portalSignUp, name='signup'),
     path('accounts/signup/kurir/', kurir.portalSignUp, name='kurir_signup'),
     path('accounts/signup/manager/', manager.portalSignUp, name='manager_signup'),
+
 ]

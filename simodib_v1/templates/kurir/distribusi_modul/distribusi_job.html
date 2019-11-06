@@ -27,13 +27,9 @@
 		<script>
 		$(document).ready(function() {
 		new PNotify({
-		type: 'success',
-		title: 'Message',
-		text: '{{message}}',
-		});
-		$("#jenis_beras").select2({
-				theme: "bootstrap",
-				width: "100%",
+			type: '{{typeMsg}}',
+			title: 'Message',
+			text: '{{message}}',
 			});
 		});
 		</script>
@@ -69,8 +65,9 @@
 										<td class="align-middle">{{ distribusi.distribution.ordered_by }}</td>
 										<td class="align-middle">{{ distribusi.distribution.address }}</td>
 										<td>
-											<button type="button" class="btn btn-danger modalcolor hvr-wobble-horizontal" data-toggle="modal" data-target="#delete_modal" data-distribusi="{{distribusi.name}}_{{distribusi.pk}}" data-animate-modal-delete="jello" data-modalcolor="#ff6666">Delete</button>
-											<button type="button" class="btn btn-success hvr-wobble-horizontal" data-toggle="modal" data-target="#add_pesan_modal" data-add="{{distribusi.name}}_{{distribusi.pk}}" data-animate-modal="rotateInDownLeft">PROSES</button>
+											<button type="button" class="btn btn-danger modalcolor hvr-wobble-horizontal" data-toggle="modal" data-target="#delete_modal" data-distribusi="{{distribusi.distribution.name}}_{{distribusi.pk}}" data-animate-modal-delete="jello" data-modalcolor="#ff6666">CANCEL</button>
+											<a href="{% url 'kurir:viewDetail_kurir' pk=distribusi.distribution.pk pk2=distribusi.pk%}"><button class="btn btn-info hvr-wobble-to-top-right">DETAIL</button></a>
+											<button type="button" class="btn btn-success hvr-wobble-horizontal" data-toggle="modal" data-target="#proses_modal" data-process="{{distribusi.distribution.name}}_{{distribusi.id}}" data-animate-modal="rotateInDownLeft">PROSES</button>
 										</td>
 									</tr>
 									{% empty %}
@@ -103,122 +100,28 @@
 							</div>
 						</div>
 					</div>
-					<div id="add_form_modal" class="modal fade animated" role="dialog">
+					<div id="proses_modal" class="modal fade animated" role="dialog">
 						<div class="modal-dialog">
 							<div class="modal-content">
 								<div class="modal-header">
 									<button type="button" class="close" data-dismiss="modal">&times;</button>
-									<h4 class="modal-title">Tambah Data distribusi</h4>
+									<h4 class="modal-title">Konfirmasi Proses</h4>
 								</div>
-								<form role="form" method="POST" action="{% url 'manager:viewDistribusi' %}">
-									{% csrf_token %}
-									<div class="modal-body">
-										<div class="row m-t-10">
-											<div class="col-md-6">
-												<div class="input-group">
-													<label class="sr-only" for="distribution_name">Nama/Kode Distribusi</label>
-													<input type="text" id="distribution_name_code"
-													placeholder="Nama/Kode Distribusi" class="form-control m-t-10" disabled>
-													<input type="hidden" name="name" id="distribution_name" class="form-control m-t-10">
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="input-group">
-													<label class="sr-only" for="last-name">Pemesan</label>
-													<input type="text" name="ordered_by" id="last-name"
-													placeholder="Nama Pemesan" class="form-control m-t-10" required="">
-												</div>
-											</div>
-										</div>
-										<div class="row m-t-10">
-											<div class="col-md-12">
-												<div class="form-group">
-													<label class="sr-only" for="no-hp">No. Hp</label>
-													<input type="text" name="no_hp" id="no-hp" placeholder="No. Hp" class="form-control" required="">
-												</div>
-												<div class="form-group">
-													<label class="sr-only" for="email">
-														E-mail
-													</label>
-													<input type="text" name="email" id="email" placeholder="E-Mail (opsional)" class="form-control">
-												</div>
-												<div class="form-group">
-													<label class="sr-only" for="message">Alamat</label>
-													<textarea name="address" rows="4" class="form-control resize_vertical" placeholder="Alamat" required=""></textarea>
-												</div>
-												<div class="form-group">
-													<label class="sr-only" for="catatan">Catatan</label>
-													<textarea name="catatan" rows="4" class="form-control resize_vertical" placeholder="Catatan Khusus (Opsional)"></textarea>
-												</div>
-											</div>
-										</div>
-									</div>
-									
-									<div class="modal-footer">
-										<button type="submit" class="btn btn-succes">Submit</button>
-										<button type="reset" class="btn btn-default">Reset</button>
-										<button type="button" class="btn btn-default" data-dismiss="modal">
-										Close
-										</button>
-									</div>
-								</form>
-							</div>
-						</div>
-					</div>
-					<div id="add_pesan_modal" class="modal fade animated" role="dialog">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal">&times;</button>
-									<h4 class="modal-title">Input Data Pesanan</h4>
+								<div class="modal-body">
+									<h3 id="proses_text"></h3>
 								</div>
-								<form id="nonsingle-rice" role="form" method="POST" action="{% url 'manager:addPesanan' %}">
+								<form id="process_form" method="POST" action="{% url 'kurir:prosesDistribusi_kurir'%}">
 									{% csrf_token %}
-									<input id="id_dist" type="hidden" name="id_distribusi">
-									<div class="modal-body">
-										<div id="pesanan0" class="row">
-											<div class="col-md-5">
-												<div class="form-group">
-													<label class="control-label" style="width: 100%;"><center style="margin-bottom: 10px;"><b>JENIS BERAS</b></center>
-														<select id="jenis_beras" name="name[]" required="">
-															<option>Pilih Jenis Beras</option>
-															{% for beras in dataBeras %}
-																<option value="{{beras.pk}}" title="{{beras.name}}_Rp.{{beras.price}}">{{beras.name}} - Rp.{{beras.price}}/Kwintal</option>
-															{% endfor %}
-														</select>
-													</label>
-												</div>
-											</div>
-											<div class="col-md-1">
-												<div class="trip-type-multi">
-													<i class="fa ti-arrow-right icon"></i>
-												</div>
-											</div>
-											<div class="col-md-5">
-												<div class="form-group">
-													<label class="control-label" style="width: 100%;"><center style="margin-bottom: 10px;"><b>JUMLAH</b></center>
-														<input type="text" class="form-control"
-														placeholder="Kwintal" name="value[]" required="">
-													</label>
-												</div>
-											</div>
-										</div>
-									</div>
-									
 									<div class="modal-footer">
-										<div class="col-sm-6">
-											<a class="btn btn-default" id="add-rice">
-												<i class="fa fa-fw ti-plus"></i> Add Rice
-											</a>
-											<label>Add Rices(Upto 5)</label>
-										</div>
-										<button type="submit" class="btn btn-succes">Submit Pesanan</button>
-										<button type="button" class="btn btn-default" data-dismiss="modal">
-										Close
-										</button>
 										
+										<input id="id_taken" type="hidden" name="id_taken">
+										<button type="submit" class="btn btn-succes">PROSES</button>
+										<button type="button" class="btn btn-default" data-dismiss="modal">
+										Close
+										</button>
 									</div>
 								</form>
+								
 							</div>
 						</div>
 					</div>
@@ -267,10 +170,10 @@
 				width: "100%",
 			});
 			// OUT MODAL
-			$('#add_pesan_modal').on('hide.bs.modal', function () {
-	$("#add_pesan_modal").removeClass().addClass("modal fade animated rollOut");
+			$('#proses_modal').on('hide.bs.modal', function () {
+	$("#proses_modal").removeClass().addClass("modal fade animated rollOut");
 		}).on('hidden.bs.modal', function () {
-		$("#add_pesan_modal").removeClass().addClass("modal fade animated");
+		$("#proses_modal").removeClass().addClass("modal fade animated");
 		});
 		$('#delete_modal').on('hide.bs.modal', function () {
 	$("#delete_modal").removeClass().addClass("modal fade animated rollOut");
@@ -282,7 +185,7 @@
 		$("#add_form_modal").addClass($(this).attr("data-animate-modal-add"));
 		});
 			$("[data-animate-modal]").on('click', function () {
-		$("#add_pesan_modal").addClass($(this).attr("data-animate-modal"));
+		$("#proses_modal").addClass($(this).attr("data-animate-modal"));
 		});
 		$("[data-animate-modal-delete]").on('click', function () {
 		$("#delete_modal").addClass($(this).attr("data-animate-modal-delete"));
@@ -355,19 +258,15 @@
 		modal.find('.modal-body h4').text('Yakin Ingin Menghapus ' + namadistribusi + '?')
 		modal.find('.modal-footer input').val(iddistribusi)
 		})
-		$('#add_pesan_modal').on('show.bs.modal', function (event) {
-			$("#jenis_beras").select2({
-				theme: "bootstrap",
-				width: "100%",
-			});
+		$('#proses_modal').on('show.bs.modal', function (event) {
 		var button_add = $(event.relatedTarget)
-		var dataRiceAdd = button_add.data('add')
-		var arrDistribusi = dataRiceAdd.split("_");
+		var data = button_add.data('process')
+		var arrDistribusi = data.split("_");
 		var namaDistribusi = arrDistribusi[0];
 		var idDistribusi = arrDistribusi[1];
 		var modal = $(this)
-		modal.find('.modal-title').text('Tambah Pesanan Untuk Order ' + namaDistribusi)
-		modal.find('#nonsingle-rice #id_dist').val(idDistribusi)
+		modal.find('#proses_text').text('Yakin Untuk memproses Distribusi: ' + namaDistribusi+' ?')
+		modal.find('#process_form #id_taken').val(idDistribusi)
 		// modal.find('.modal-footer input').val(iddistribusi)
 		})
 		

@@ -39,11 +39,185 @@
 		</script>
 	{% endif %}
 	<div class="row">
+		<div class="col-md-6">
+			<div class="panel">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+					<i class="fa fa-fw ti-ink-pen"></i> Data Distribusi Dalam Proses Pengiriman
+					</h3>
+					<span class="pull-right">
+						{# <i class="fa fa-fw ti-close removepanel clickable"></i> #}
+					</span>
+				</div>
+				<div class="panel-body">
+					{% if jobList %}
+						<div class="form-group">
+							<label for="pemesan" class="control-label">
+								Pemesan
+							</label>
+							<input type="text" class="form-control" maxlength="25" name="pemesan" id="pemesan" disabled="" value="{{ jobList.distribution.ordered_by }}">
+						</div>
+						<div class="form-group">
+							<label for="no_hp" class="control-label">No. Hp</label>
+							<input type="text" class="form-control" maxlength="25" name="no_hp" id="no_hp" disabled="" value="{{ jobList.distribution.telepon }}">
+						</div>
+						<div class="form-group">
+							<label for="email" class="control-label">
+								Email
+							</label>
+							<input type="text" class="form-control" maxlength="25" name="email" id="email" disabled="" value="{{ jobList.distribution.email }}">
+						</div>
+						<div class="form-group">
+							<label for="alamat" class="control-label">Alamat</label>
+							<textarea id="alamat" class="form-control resize_vertical" maxlength="225" rows="4" disabled="">{{ jobList.distribution.address }}</textarea>
+						</div>
+					{% else %}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="panel ">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+					<i class="ti-layout-tab-window"></i> Update Status Distribusi
+					</h3>
+					<span class="pull-right">
+						<i class="fa fa-fw ti-angle-up clickable"></i>
+						<i class="fa fa-fw ti-close removepanel clickable"></i>
+					</span>
+				</div>
+				<div class="panel-body">
+					<div class="bs-example">
+						<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+							<li class="active">
+								<a href="#instant" data-toggle="tab" aria-expanded="true">Instant</a>
+							</li>
+							<li class="">
+								<a href="#manual" data-toggle="tab" aria-expanded="false">Manual</a>
+							</li>
+						</ul>
+						<form name="form_tambahStatus" id="form_tambahStatus" role="form" onsubmit="validateForm()">
+							{% csrf_token %}
+							<div id="myTabContent" class="tab-content">
+								<div class="tab-pane fade active in" id="instant">
+									<div class="row">
+										<div class="col-md-12">
+											<select id="status_antar1" name="status_antar1" class="form-control" data-bv-field="status_antar1">
+												<option value="">
+													Silahkan Pilih Status Distribusi
+												</option>
+												<option value="Sedang dalam Perjalanan Menuju Alamat Antar">
+													Sedang Menyiapkan Barang Antaran
+												</option>
+												<option value="Sedang Dalam Proses Perjalanan Menuju Alamat Antar">
+													Sedang Dalam Proses Perjalanan Menuju Alamat Antar
+												</option>
+												<option value="Mengalami Kemacetan Saat Proses Antar">
+													Mengalami Kemacetan Saat Proses Antar
+												</option>
+												<option value="Mengalami Kecelakaan Saat Proses Antar">
+													Mengalami Kecelakaan Saat Proses Antar
+												</option>
+												<option value="Sedang Memindahkan Barang Menuju Truck Antaran Baru">
+													Sedang Memindahkan Barang Menuju Truck Antaran Baru
+												</option>
+											</select>
+											
+										</div>
+									</div>
+								</div>
+								<div class="tab-pane fade" id="manual">
+									<div class="row">
+										<div class="col-md-12">
+											<textarea rows="4" class="form-control resize_vertical" placeholder="Tulis Status" name="status_antar2" id="status_antar2"></textarea>
+										</div>
+									</div>
+								</div>
+								<br>
+								<br>
+								
+								<div class="row">
+									<div class="col-md-12">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label for="latitude" class="control-label">
+													Latitude
+												</label>
+												<input type="text" id="latitude" class="form-control" disabled="" name="latitude">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label for="longitude" class="control-label">
+													Longitude
+												</label>
+												<input type="text" id="longitude" class="form-control" disabled="" name="longitude">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="col-md-4">
+											<div class="form-group">
+												<label for="data_x" class="control-label">
+													X
+												</label>
+												<input type="text" id="data_x" class="form-control" disabled="" name="data_x">
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="form-group">
+												<label for="data_y" class="control-label">
+													Y
+												</label>
+												<input type="text" id="data_y" class="form-control" disabled="" name="data_y">
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="form-group">
+												<label for="data_z" class="control-label">
+													Z
+												</label>
+												<input type="text" id="data_z" class="form-control" disabled="" name="data_z">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="col-md-6">
+											<center>
+											<button class="button button-circle button-royal-flat hvr-buzz-out" data-toggle="modal" data-target="#finish_modal" data-distribusi="{{jobList.distribution.name}}_{{jobList.pk}}">DISTRIBUSI SELESAI
+											</button>
+											</center>
+										</div>
+										<div class="col-md-6">
+											<center>
+											<button class="button button-circle button-action-flat hvr-wobble-to-top-right" type="submit">
+											UPDATE STATUS
+											</button>
+											</center>
+										</div>
+									</div>
+									
+								</div>
+							</div>
+						</form>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row">
 		<div class="col-lg-12">
 			<div class="panel filterable">
 				<div class="panel-heading clearfix  ">
 					<div class="panel-title pull-left">
-						<i class="ti-export"></i> <b>DATA DISTRIBUSI</b>
+						<i class="ti-export"></i> <b>DATA LOG DISTRIBUSI ID: {{jobList.distribution.name}}</b>
 					</div>
 					<div class="tools pull-right">
 						<!-- <button type="button" class="btn btn-success hvr-wobble-horizontal" data-toggle="modal" data-target="#add_form_modal" odata-animate-modal-add="bounceInLeft">Tambah</button> -->
@@ -51,181 +225,167 @@
 				</div>
 				<div class="panel-body">
 					<div class="table-responsive">
-						<table class="table table-striped table-bordered" id="table1">
+						<table class="table table-striped table-bordered" id="tabel_log">
 							<thead>
 								<tr>
 									<th>No</th>
-									<th>Nama/Kode Distribusi</th>
-									<th>Pemesan</th>
-									<th>Alamat Pemesan</th>
-									<th>Aksi</th>
+									<th>Tanggal</th>
+									<th>Status</th>
+									<th>Location</th>
+									<th>x</th>
+									<th>y</th>
+									<th>z</th>
 								</tr>
 							</thead>
 							<tbody>
-								{% for distribusi in jobList %}
+								{% for log in dataLog %}
 									<tr>
 										<td>{{ forloop.counter }}</td>
-										<td>{{ distribusi.distribution.name }}</td>
-										<td class="align-middle">{{ distribusi.distribution.ordered_by }}</td>
-										<td class="align-middle">{{ distribusi.distribution.address }}</td>
-										<td>
-											<button type="button" class="btn btn-danger modalcolor hvr-wobble-horizontal" data-toggle="modal" data-target="#delete_modal" data-distribusi="{{distribusi.name}}_{{distribusi.pk}}" data-animate-modal-delete="jello" data-modalcolor="#ff6666">Delete</button>
-											<button type="button" class="btn btn-success hvr-wobble-horizontal" data-toggle="modal" data-target="#add_pesan_modal" data-add="{{distribusi.name}}_{{distribusi.pk}}" data-animate-modal="rotateInDownLeft">PROSES</button>
-										</td>
+										<td>{{ log.date}}</td>
+										<td class="align-middle">{{ log.status }}</td>
+										<td class="align-middle">{{ log.location }}</td>
+										<td class="align-middle">{{ log.x }}</td>
+										<td class="align-middle">{{ log.y }}</td>
+										<td class="align-middle">{{ log.z }}</td>
 									</tr>
 									{% empty %}
 									<tr>
-										<td class="bg-light text-center font-italic" colspan="5">No Distribution Data List for your right now.</td>
+										<td class="bg-light text-center font-italic" colspan="7">Tidak ada list log perjalanan yang tersedia</td>
 									</tr>
 								{% endfor %}
 							</tbody>
 						</table>
 					</div>
 					
-					<div id="delete_modal" class="modal fade animated" role="dialog">
+					<div id="finish_modal" class="modal fade animated" role="dialog">
 						<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
 									<button type="button" class="close" data-dismiss="modal">×</button>
-									<h4 class="modal-title" id="delete_modalLabel">Delete Data</h4>
+									<h4 class="modal-title" id="delete_modalLabel">Distribusi Selesai</h4>
 									
 								</div>
 								<div class="modal-body">
-									<h4>delete text</h4>
+									<h4>Yakin ingin Menyelesaikan Distribusi ini?</h4>
 								</div>
 								<div class="modal-footer">
-									<form method="GET" action="{% url 'manager:deleteDistribusi' %}">
-										<input type="hidden" class="form-control" id="distribusi-name" name="id_distribusi">
-										<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-										<button type="submit" class="btn btn-danger">Hapus</button>
+									<form method="GET" action="{% url 'kurir:distribusiSelesai' %}">
+										<input type="hidden" class="form-control" id="id_distribusi" name="id_distribusi" value="{{jobList.pk}}">
+										<button type="button" class="btn btn-info" data-dismiss="modal">BATAL</button>
+										<button type="submit" class="btn btn-success">YA, SELESAIKAN</button>
 									</form>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div id="add_form_modal" class="modal fade animated" role="dialog">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal">&times;</button>
-									<h4 class="modal-title">Tambah Data distribusi</h4>
-								</div>
-								<form role="form" method="POST" action="{% url 'manager:viewDistribusi' %}">
-									{% csrf_token %}
-									<div class="modal-body">
-										<div class="row m-t-10">
-											<div class="col-md-6">
-												<div class="input-group">
-													<label class="sr-only" for="distribution_name">Nama/Kode Distribusi</label>
-													<input type="text" id="distribution_name_code"
-													placeholder="Nama/Kode Distribusi" class="form-control m-t-10" disabled>
-													<input type="hidden" name="name" id="distribution_name" class="form-control m-t-10">
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="input-group">
-													<label class="sr-only" for="last-name">Pemesan</label>
-													<input type="text" name="ordered_by" id="last-name"
-													placeholder="Nama Pemesan" class="form-control m-t-10" required="">
-												</div>
-											</div>
-										</div>
-										<div class="row m-t-10">
-											<div class="col-md-12">
-												<div class="form-group">
-													<label class="sr-only" for="no-hp">No. Hp</label>
-													<input type="text" name="no_hp" id="no-hp" placeholder="No. Hp" class="form-control" required="">
-												</div>
-												<div class="form-group">
-													<label class="sr-only" for="email">
-														E-mail
-													</label>
-													<input type="text" name="email" id="email" placeholder="E-Mail (opsional)" class="form-control">
-												</div>
-												<div class="form-group">
-													<label class="sr-only" for="message">Alamat</label>
-													<textarea name="address" rows="4" class="form-control resize_vertical" placeholder="Alamat" required=""></textarea>
-												</div>
-												<div class="form-group">
-													<label class="sr-only" for="catatan">Catatan</label>
-													<textarea name="catatan" rows="4" class="form-control resize_vertical" placeholder="Catatan Khusus (Opsional)"></textarea>
-												</div>
-											</div>
-										</div>
-									</div>
-									
-									<div class="modal-footer">
-										<button type="submit" class="btn btn-succes">Submit</button>
-										<button type="reset" class="btn btn-default">Reset</button>
-										<button type="button" class="btn btn-default" data-dismiss="modal">
-										Close
-										</button>
-									</div>
-								</form>
-							</div>
-						</div>
-					</div>
-					<div id="add_pesan_modal" class="modal fade animated" role="dialog">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal">&times;</button>
-									<h4 class="modal-title">Input Data Pesanan</h4>
-								</div>
-								<form id="nonsingle-rice" role="form" method="POST" action="{% url 'manager:addPesanan' %}">
-									{% csrf_token %}
-									<input id="id_dist" type="hidden" name="id_distribusi">
-									<div class="modal-body">
-										<div id="pesanan0" class="row">
-											<div class="col-md-5">
-												<div class="form-group">
-													<label class="control-label" style="width: 100%;"><center style="margin-bottom: 10px;"><b>JENIS BERAS</b></center>
-														<select id="jenis_beras" name="name[]" required="">
-															<option>Pilih Jenis Beras</option>
-															{% for beras in dataBeras %}
-																<option value="{{beras.pk}}" title="{{beras.name}}_Rp.{{beras.price}}">{{beras.name}} - Rp.{{beras.price}}/Kwintal</option>
-															{% endfor %}
-														</select>
-													</label>
-												</div>
-											</div>
-											<div class="col-md-1">
-												<div class="trip-type-multi">
-													<i class="fa ti-arrow-right icon"></i>
-												</div>
-											</div>
-											<div class="col-md-5">
-												<div class="form-group">
-													<label class="control-label" style="width: 100%;"><center style="margin-bottom: 10px;"><b>JUMLAH</b></center>
-														<input type="text" class="form-control"
-														placeholder="Kwintal" name="value[]" required="">
-													</label>
-												</div>
-											</div>
-										</div>
-									</div>
-									
-									<div class="modal-footer">
-										<div class="col-sm-6">
-											<a class="btn btn-default" id="add-rice">
-												<i class="fa fa-fw ti-plus"></i> Add Rice
-											</a>
-											<label>Add Rices(Upto 5)</label>
-										</div>
-										<button type="submit" class="btn btn-succes">Submit Pesanan</button>
-										<button type="button" class="btn btn-default" data-dismiss="modal">
-										Close
-										</button>
-										
-									</div>
-								</form>
-							</div>
-						</div>
-					</div>
+
 				</div>
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript">
+		$(document).on('submit','#form_tambahStatus',function(e){
+			e.preventDefault();
+			$.ajax({
+				type:'POST',
+				url:"{% url 'kurir:tambahStatus_kurir' %}",
+				data:{
+					status_antar1:$('#status_antar1').val(),
+					status_antar2:$('#status_antar2').val(),
+					latitude:$('#latitude').val(),
+					longitude:$('#longitude').val(),
+					data_x:$('#data_x').val(),
+					data_y:$('#data_y').val(),
+					data_z:$('#data_z').val(),
+					csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+				},
+				dataType:  'json',
+				success: function  (data) {
+					console.log(data);
+					let rows =  '';
+					var noUrut = 1;
+					var lastData = data.log.length;
+					data.log.forEach(log => {
+						if (noUrut == lastData){
+							rows += `
+								<tr>
+											<td>${noUrut}</td>
+											<td>${log.date}</td>
+											<td class="align-middle">${log.status}</td>
+											<td class="align-middle">${log.location}</td>
+											<td class="align-middle">${log.x}</td>
+											<td class="align-middle">${log.y}</td>
+											<td class="align-middle">${log.z}</td>
+								</tr>`;
+						}
+						noUrut = noUrut + 1;
+					});
+					$('#tabel_log > tbody').append(rows);
+					new PNotify({
+						type: 'success',
+						title: 'Message',
+						text: 'Berhasil Update Status Perjalanan',
+					});
+				}
+			});
+		});
+		
+		// $(document).on('submit','#form_tambahStatus',function(event) {
+				// 	event.preventDefault();
+				// 	$.ajax({
+						// 		type:'GET',
+						// 		url:"{% url 'kurir:getLogPerjalanan' %}",
+						// 		dataType:  'json',
+						// 		success: function  (data) {
+								// 			console.log(data);
+								// 			let rows =  '';
+								// 			var noUrut = 1;
+								// 			var lastData = data.log.length;
+								// 			data.log.forEach(rice => {
+										// 				if (noUrut == lastData){
+												// 					rows += `
+														// 						<tr>
+																		// 							<td>${noUrut}</td>
+																		// 							<td>${log.date}</td>
+																		// 							<td class="align-middle">${log.status}</td>
+																		// 							<td class="align-middle">${log.location}</td>
+																		// 							<td class="align-middle">${log.x}</td>
+																		// 							<td class="align-middle">${log.y}</td>
+																		// 							<td class="align-middle">${log.z}</td>
+														// 						</tr>`;
+										// 				}
+										// 				noUrut = noUrut + 1;
+								// 			});
+								// 			$('#tabel_log > tbody').append(rows);
+						// 		}
+				// 	});
+		// });
+		function validateForm(){
+			var status1 = document.getElementById('status_antar1').value;
+			var status2 = document.getElementById('status_antar2').value;
+			if ((status1 == null || status1 == "")&& (status2 == null || status2 == "")) {
+			new PNotify({
+					type: 'warning',
+					title: 'Message',
+					text: 'Kolom Status Masih Kosong, Salah satu harus terisi (instant/manual)',
+				});
+		return false;
+		}
+		}
+		const api_url = 'https://api.wheretheiss.at/v1/satellites/25544';
+		async function getKurir(){
+			const response = await fetch(api_url);
+			const data = await response.json();
+			const {latitude, longitude, footprint, solar_lat, solar_lon} = data;
+			document.getElementById('latitude').value = latitude.toFixed(6);
+			document.getElementById('longitude').value = longitude.toFixed(6);
+			document.getElementById('data_x').value = footprint.toFixed(4);
+			document.getElementById('data_y').value = solar_lat.toFixed(4);
+			document.getElementById('data_z').value = solar_lon.toFixed(4);
+		}
+		getKurir();
+		setInterval(getKurir,1000);
+	</script>
 {% endblock %}
 {% block extraCss %}
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

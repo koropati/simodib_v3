@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block aktif_distribusi %}
+{% block aktif_distribusi_kurir %}
 	active
 {% endblock %}
-{% block aktif_onprocess %}
+{% block belum_diproses %}
 	class="active"
 {% endblock %}
 {% block content-header %}
-	<h1>DETAIL ON PROCESS DISTRIBUSI</h1>
+	<h1>DETAIL DISTRIBUSI</h1>
 	<ol class="breadcrumb">
 		<li>
 			<a href="{% url 'home' %}">
@@ -18,7 +18,7 @@
 			Distribusi
 		</li>
 		<li>
-			On Process
+			Belum Diproses
 		</li>
 		<li class="active">
 			Detail
@@ -161,6 +161,7 @@
 									</div>
 								</div>
 							</fieldset>
+							<br>
 							<fieldset>
 								<legend>Aksi</legend>
 								<div data-row-span="1">

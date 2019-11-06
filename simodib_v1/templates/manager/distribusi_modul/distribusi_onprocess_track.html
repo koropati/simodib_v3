@@ -30,7 +30,7 @@
 		<script>
 		$(document).ready(function() {
 		new PNotify({
-		type: 'success',
+		type: '{{typeMsg}}',
 		title: 'Message',
 		text: '{{message}}',
 		});
@@ -161,7 +161,7 @@
 		async function getKurir(){
 			const response = await fetch(api_url);
 			const data = await response.json();
-			const {latitude, longitude} = data;
+			const {latitude, longitude, footprint, solar_lat, solar_lon} = data;
 			myMarker.setLatLng([latitude, longitude]);
 			if (firstTime) {
 				mymap.setView([latitude, longitude], 3);

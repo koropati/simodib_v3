@@ -67,3 +67,4 @@ def updatelog(request):
         return HttpResponse('sukses')
     else:
         return HttpResponse('gagal')
+

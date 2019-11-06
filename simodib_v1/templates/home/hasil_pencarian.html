@@ -1,0 +1,156 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block content %}
+	<div class="row">
+		<div class="col-md-12">
+			<div class="col-md-6">
+				<div class="panel">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+						<i class="fa fa-fw ti-ink-pen"></i> Data Distribusi Dalam Proses Pengiriman
+						</h3>
+						<span class="pull-right">
+							{# <i class="fa fa-fw ti-close removepanel clickable"></i> #}
+						</span>
+					</div>
+					<div class="panel-body">
+						{% if dataDistribusi %}
+							<div class="form-group">
+								<label for="pemesan" class="control-label">
+									Pemesan
+								</label>
+								<input type="text" class="form-control" maxlength="25" name="pemesan" id="pemesan" disabled="" value="{{ dataDistribusi.distribution.ordered_by }}">
+							</div>
+							
+							<div class="form-group">
+								<label for="alamat" class="control-label">Alamat</label>
+								<textarea id="alamat" class="form-control resize_vertical" maxlength="225" rows="4" disabled="">{{ dataDistribusi.distribution.address }}</textarea>
+							</div>
+
+							<div class="form-group">
+								<label for="kurir" class="control-label">Kurir Pengantar</label>
+								<input type="text" class="form-control" maxlength="25" name="kurir" id="kurir" disabled="" value="{{ dataDistribusi.kurir.user.first_name}} {{ dataDistribusi.kurir.user.last_name}}">
+							</div>
+
+							<div class="form-group">
+								<label for="status" class="control-label">Status Terkini</label>
+								<input type="text" class="form-control" maxlength="25" name="status" id="status" disabled="" value="{{ dataDistribusi.status_antar}}">
+							</div>
+
+						{% else %}
+						{% endif %}
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="panel">
+					<div class="panel-heading">
+						<h3 class="panel-title">Timeline Distribusi</h3>
+					</div>
+					<div class="panel-body">
+						<div>
+							<ul class="timeline timeline-update">
+								{% for log in log %}
+									<li>
+										<div class="timeline-badge primary wow lightSpeedIn center">
+											<img src="{% static 'img/authors/avatar1.jpg' %}" height="36" width="36"
+											class="img-circle pull-right" alt="avatar-image">
+										</div>
+										<div class="timeline-panel wow slideInLeft"
+											style="display:inline-block;">
+											<div class="timeline-heading">
+												<h4 class="timeline-title">{{log.taken_distribution.kurir.user.first_name}} {{log.taken_distribution.kurir.user.last_name}}</h4>
+												<p>
+													<small class="text-primary">{{log.date}}</small>
+												</p>
+											</div>
+											<div class="timeline-body">
+												<p>
+													{{log.status}}
+												</p>
+											</div>
+										</div>
+									</li>
+									{% empty %}
+									<li>
+										<div class="timeline-badge primary wow lightSpeedIn center">
+											<img src="{% static 'img/authors/avatar1.jpg' %}" height="36" width="36"
+											class="img-circle pull-right" alt="avatar-image">
+										</div>
+										<div class="timeline-panel wow slideInLeft"
+											style="display:inline-block;">
+											<div class="timeline-heading">
+												<h4 class="timeline-title">Data Log Perjalanan</h4>
+												<p>
+													Data tgl. masih kosong
+												</p>
+											</div>
+											<div class="timeline-body">
+												<p>
+													Log perjalanan masih kosong
+												</p>
+											</div>
+										</div>
+									</li>
+									
+								{% endfor %}
+								
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		function validateForm(){
+			var id_taken = document.getElementById('id_taken').value;
+			if (id_taken == null || id_taken == "") {
+			new PNotify({
+					type: 'warning',
+					title: 'Message',
+					text: 'Kolom Kode Pengiriman Masih Kosong',
+				});
+		return false;
+		}
+		}
+	</script>
+{% endblock %}
+{% block extraCss %}
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Button -->
+	<link href="{% static 'vendors/hover/css/hover-min.css' %}" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'vendors/laddabootstrap/css/ladda-themeless.min.css' %}">
+	<link href="{% static 'css/buttons_sass.css' %}" rel="stylesheet">
+	<link href="{% static 'css/advbuttons.css' %}" rel="stylesheet">
+	<!-- End Button -->
+	<!-- PNotify -->
+	<link rel="stylesheet" href="{% static 'vendors/animate/animate.min.css' %}"/>
+	<link rel="stylesheet" href="{% static 'vendors/pnotify/css/pnotify.css' %}">
+	<link href="{% static 'vendors/pnotify/css/pnotify.brighttheme.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'vendors/pnotify/css/pnotify.buttons.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'vendors/pnotify/css/pnotify.mobile.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'vendors/pnotify/css/pnotify.history.css' %}" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/custom_css/toastr_notificatons.css' %}">
+	<!-- End PNotify -->
+{% endblock %}
+{% block extraJs %}
+	<!-- Button -->
+	<script type="text/javascript" src="{% static 'vendors/Buttons/js/buttons.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/spin.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/ladda.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/custom_js/button_main.js' %}"></script>
+	<!-- End Button -->
+	<!-- PNotify -->
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.animate.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.buttons.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.confirm.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.nonblock.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.mobile.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.desktop.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.history.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.callbacks.js' %}"></script>
+	<script src="{% static 'js/custom_js/notifications.js' %}"></script>
+	<!-- End Notify -->
+{% endblock %}

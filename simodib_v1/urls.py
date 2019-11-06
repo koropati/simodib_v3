@@ -1,16 +1,29 @@
 from django.urls import include, path
-from .views import company, kurir, manager
+from .views import company, kurir, manager, home
  
 urlpatterns = [
 	path('', company.home, name='home'),
     path('closed/', company.closedPortal, name='closed'),
     path('updatelog/', company.updatelog, name='updatelog'),
+    
+
+    path('home/', include(([
+        path('', home.home, name='home_guest'),
+        path('cari/', home.cariDistribusi, name='cariDistribusi'),
+        path('cari/log/', home.cariLogDistribusi, name='cariLogDistribusi'),
+    ], 'home'), namespace='home')),
 
     path('kurir/', include(([
         path('', kurir.dashboard, name='dashboard_kurir'),
         path('distribusi/unfinished/', kurir.viewUnfinished, name='viewUnfinished_kurir'),
+        path('distribusi/unfinished/detail/<int:pk>/<int:pk2>/', kurir.viewDetail, name='viewDetail_kurir'),
+        path('distribusi/unfinished/process/', kurir.prosesDistribusi, name='prosesDistribusi_kurir'),
         path('distribusi/onprocess/', kurir.viewOnprocess, name='viewOnprocess_kurir'),
+        path('distribusi/onprocess/newStatus/', kurir.tambahStatus, name='tambahStatus_kurir'),
+        path('distribusi/onprocess/getLog/', kurir.getLogPerjalanan, name='getLogPerjalanan'),
+        path('distribusi/onprocess/selesai', kurir.distribusiSelesai, name='distribusiSelesai'),
         path('distribusi/finished/', kurir.viewFinished, name='viewFinished_kurir'),
+        
         # path('', kurir.DistributionView.as_view(), name='distribution_list'),
         # path('interests/', kurir.StudentInterestsView.as_view(), name='student_interests'),
         # path('taken/', kurir.TakenQuizListView.as_view(), name='taken_quiz_list'),

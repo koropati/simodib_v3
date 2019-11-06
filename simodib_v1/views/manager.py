@@ -53,8 +53,9 @@ def portalSignUp(request):
 @manager_required
 def dashboard(request):
     totalKurir = Kurir.objects.all().count()
+    timeline = DataLogPerjalanan.objects.all()
     # user = User.object.select_related('user')
-    return render(request,'manager/dashboard.html', {'totalKurir' : totalKurir,})
+    return render(request,'manager/dashboard.html', {'totalKurir' : totalKurir,'timeline':timeline})
 
 @login_required
 @manager_required
@@ -95,6 +96,7 @@ def deleteKurir(request):
     # else:
     #     return redirect('home')
 
+    typeMsg='success'
     message=''
     if request.method == 'GET':
         # id_kurir = request.GET.get('id_kurir')
@@ -144,6 +146,7 @@ def viewToken(request):
 @login_required
 @manager_required
 def viewBeras(request):
+    typeMsg='success'
     message=''
     if request.method == 'POST':  # data sent by user
        name = request.POST.get('name')
@@ -151,11 +154,12 @@ def viewBeras(request):
        price = request.POST.get('price')
        if name and stock and price :
         obj = Rice.objects.create(name = name, stock = stock, price = price)
+        typeMsg='success'
         message = 'Tambah data berhasil!'
         obj.save()
         return HttpResponse('')
     dataBeras = Rice.objects.all()
-    return render(request, 'manager/beras_modul/beras.html', {'dataBeras': dataBeras, 'message':message})
+    return render(request, 'manager/beras_modul/beras.html', {'dataBeras': dataBeras, 'message':message, 'typeMsg':typeMsg})
 
 @login_required
 @manager_required
@@ -169,6 +173,7 @@ def getBeras(request):
 @login_required
 @manager_required
 def tambahStockBeras(request):
+    typeMsg='success'
     message=''
     if request.method == 'POST':  # data sent by user
        id_beras = request.POST.get('id')
@@ -178,6 +183,7 @@ def tambahStockBeras(request):
         stock_sebelumnya = datas.stock
         stock = str(int(stock_sebelumnya)+int(tambahan_stock))
         Rice.objects.filter(pk=id_beras).update(stock=stock)
+        typeMsg = 'success'
         message = 'Tambah data berhasil!'
         beras = list(Rice.objects.all().values())
         data = dict()
@@ -185,13 +191,14 @@ def tambahStockBeras(request):
         return JsonResponse(data)
     else:
         dataBeras = Rice.objects.all()
-        return render(request, 'manager/beras_modul/beras.html', {'dataBeras': dataBeras, 'message':message})
+        return render(request, 'manager/beras_modul/beras.html', {'dataBeras': dataBeras, 'message':message, 'typeMsg':typeMsg})
     
 
 
 @login_required
 @manager_required
 def deleteBeras(request):
+    typeMsg='success'
     message=''
     if request.method == 'GET':
         # id_kurir = request.GET.get('id_kurir')
@@ -210,6 +217,7 @@ def deleteBeras(request):
 @login_required
 @manager_required
 def viewDistribusi(request):
+    typeMsg='success'
     message=''
     if request.method == 'POST':  # data sent by user
        name = request.POST.get('name')
@@ -222,21 +230,40 @@ def viewDistribusi(request):
        statusOrder = '0'
        if name and ordered_by and address :
         obj = Distribution.objects.create(name = name, ordered_by = ordered_by, telepon = telepon, email = email, address = address, catatan_khusus = catatan_khusus, statusOrder = statusOrder)
+        typeMsg='success'
         message = 'Tambah data berhasil!'
         obj.save()
     dataDistribusi = Distribution.objects.filter(statusOrder='0')
     dataBeras = Rice.objects.all()
-    return render(request, 'manager/distribusi_modul/distribusi.html', {'dataDistribusi': dataDistribusi, 'dataBeras': dataBeras, 'message':message})
+    return render(request, 'manager/distribusi_modul/distribusi.html', {'dataDistribusi': dataDistribusi, 'dataBeras': dataBeras, 'message':message, 'typeMsg':typeMsg})
 
 @login_required
 @manager_required
 def addPesanan(request):
+    typeMsg='success'
     message=''
     if request.method == 'POST':  # data sent by user
        id_distribusi = request.POST.get('id_distribusi')
        id_rices = request.POST.getlist('name[]')
        values = request.POST.getlist('value[]')
        id_dist = get_object_or_404(Distribution, pk=id_distribusi)
+
+       #Perulangan Untuk Cek Stock Beras Available atau tidak
+       prosesPesanan = True
+       for i in range(len(id_rices)):
+        id_rice = get_object_or_404(Rice, pk=id_rices[i])
+        value = int(values[i])
+        harga = getattr(id_rice, 'price')
+        total = str(value*harga)
+        newStock = int(id_rice.stock-value)
+        if newStock >= 0:
+            prosesPesanan = prosesPesanan and True
+        else:
+            message='Pesanan Melampaui Stock yang ada, Silahkan Cek Stock!'
+            typeMsg='warning'
+            prosesPesanan = prosesPesanan and False
+
+    if prosesPesanan == True:
        #perulangan untuk menyimpan banyaknya pesanan
        for i in range(len(id_rices)):
         # id_dist = id_distribusi
@@ -245,38 +272,49 @@ def addPesanan(request):
         value = int(values[i])
         harga = getattr(id_rice, 'price')
         total = str(value*harga)
+        newStock = int(id_rice.stock-value)
         if id_rice and value :
             obj = DetailOrder.objects.create(distribution = id_dist, rice = id_rice, value = value, prices = total)
+            Rice.objects.filter(pk=id_rices[i]).update(stock=newStock)
             obj.save()
         if i == (len(id_rices)-1):
             Distribution.objects.filter(pk=id_distribusi).update(statusOrder='1')
             message='Data Pesanan Berhasil disimpan!'
+            typeMsg='success'
     dataDistribusi = Distribution.objects.filter(statusOrder='0')
     dataBeras = Rice.objects.all()
-    return render(request, 'manager/distribusi_modul/distribusi.html', {'dataDistribusi': dataDistribusi, 'dataBeras': dataBeras, 'message':message})
+    return render(request, 'manager/distribusi_modul/distribusi.html', {'dataDistribusi': dataDistribusi, 'dataBeras': dataBeras, 'message':message, 'typeMsg':typeMsg})
 
 @login_required
 @manager_required
 def deleteDistribusi(request):
+    typeMsg='success'
     message=''
     if request.method == 'GET':
         # id_kurir = request.GET.get('id_kurir')
         message='Berhasil Hapus Data Distribusi'
         id_distribusi = request.GET.get('id_distribusi')
+
+        TakenDistribution.objects.filter(distribution=id_distribusi).delete()
         Distribution.objects.filter(pk=id_distribusi).delete()
+        
         dataDistribusi = Distribution.objects.filter(~Q(statusOrder='1'),~Q(statusOrder='2'),~Q(statusOrder='3'))
         dataBeras = Rice.objects.all()
+        typeMsg='success'
         message='Berhasil Hapus Data Distribusi'
-        return render(request, 'manager/distribusi_modul/distribusi.html', {'dataDistribusi': dataDistribusi, 'dataBeras': dataBeras, 'message':message})
+        return render(request, 'manager/distribusi_modul/distribusi.html', {'dataDistribusi': dataDistribusi, 'dataBeras': dataBeras, 'message':message, 'typeMsg':typeMsg})
     else:
         return redirect('manager:viewDistribusi')
 
 @login_required
 @manager_required
 def batalDistribusi(request):
+    typeMsg='success'
     message=''
+    typeMsg=''
     if request.method == 'GET':
         # id_kurir = request.GET.get('id_kurir')
+        typeMsg = 'success'
         message='Berhasil Membatalkan Distribusi'
         id_distribusi = request.GET.get('id_distribusi')
         id_dist = get_object_or_404(Distribution, pk=id_distribusi)
@@ -284,12 +322,13 @@ def batalDistribusi(request):
         if id_dist:
             Distribution.objects.filter(pk=id_distribusi).update(statusOrder='1')#update status Order
             TakenDistribution.objects.filter(distribution=id_distribusi).delete()#delete taken distribusi
+            typeMsg='success'
             message='Berhasil Membatalkan Distribusi'
 
-        dataDistribusi = Distribution.objects.filter(statusOrder='2') 
-        dataKurir = Kurir.objects.all()
-        dataBeras = Rice.objects.all()
-        return render(request, 'manager/distribusi_modul/distribusi.html', {'dataDistribusi': dataDistribusi, 'dataBeras': dataBeras, 'message':message})
+        dataDistribusi = TakenDistribution.objects.select_related('kurir','distribution').filter(~Q(status_track='2'))
+        # dataDistribusi = Distribution.objects.filter(statusOrder='2') #status order adalah 2
+        # dataKurir = Kurir.objects.all()
+        return render(request, 'manager/distribusi_modul/onprocess.html', {'dataDistribusi':dataDistribusi, 'message':message, 'typeMsg':typeMsg})
     else:
         return redirect('manager:viewDistribusi')
 
@@ -297,6 +336,7 @@ def batalDistribusi(request):
 @login_required 
 @manager_required
 def viewUnfinished(request):
+    typeMsg='success'
     message=''
     if request.method == 'POST':
         message = 'POST data'
@@ -309,11 +349,12 @@ def viewUnfinished(request):
 @manager_required
 def viewOnprocess(request):
     # Halaman Distribusi Proses
+    typeMsg='success'
     message=''
     if request.method == 'POST':
         message = 'POST data'
     else:
-        dataDistribusi = TakenDistribution.objects.select_related('kurir','distribution')
+        dataDistribusi = TakenDistribution.objects.select_related('kurir','distribution').filter(~Q(status_track='2'))
         # dataDistribusi = Distribution.objects.filter(statusOrder='2') #status order adalah 2
         # dataKurir = Kurir.objects.all()
         return render(request, 'manager/distribusi_modul/onprocess.html', {'dataDistribusi':dataDistribusi, 'message':message})
@@ -345,6 +386,7 @@ def viewOnprocessTrack(request, pk, pk2):
 @login_required 
 @manager_required
 def viewFinished(request):
+    typeMsg='success'
     message=''
     if request.method == 'POST':
         message = 'POST data'
@@ -356,6 +398,7 @@ def viewFinished(request):
 @login_required
 @manager_required
 def addKurir(request):
+    typeMsg='success'
     message=''
     if request.method == 'POST':  # data sent by user
        id_distribusis = request.POST.get('id_distribusi')
@@ -367,6 +410,7 @@ def addKurir(request):
         obj = TakenDistribution.objects.create(distribution = id_distribusi, kurir = id_kurir, status_antar = status_antar, status = '1')
         obj.save()
         Distribution.objects.filter(pk=id_distribusis).update(statusOrder='2')
+        typeMsg='success'
         message='Data Distribusi Berhasil diproses!'
     
         distribusi = list(Distribution.objects.filter(~Q(statusOrder='0'),~Q(statusOrder='2')).values())
@@ -376,7 +420,7 @@ def addKurir(request):
     else:
         dataDistribusi = Distribution.objects.filter(~Q(statusOrder='0'))
         dataKurir = Kurir.objects.all()
-        return render(request, 'manager/distribusi_modul/progress_distribusi.html', {'dataDistribution': dataDistribution, 'message':message})
+        return render(request, 'manager/distribusi_modul/progress_distribusi.html', {'dataDistribution': dataDistribution, 'message':message, 'typeMsg':typeMsg})
 
 
 @login_required

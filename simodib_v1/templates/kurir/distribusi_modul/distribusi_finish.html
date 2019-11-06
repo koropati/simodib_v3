@@ -69,8 +69,7 @@
 										<td class="align-middle">{{ distribusi.distribution.ordered_by }}</td>
 										<td class="align-middle">{{ distribusi.distribution.address }}</td>
 										<td>
-											<button type="button" class="btn btn-danger modalcolor hvr-wobble-horizontal" data-toggle="modal" data-target="#delete_modal" data-distribusi="{{distribusi.name}}_{{distribusi.pk}}" data-animate-modal-delete="jello" data-modalcolor="#ff6666">Delete</button>
-											<button type="button" class="btn btn-success hvr-wobble-horizontal" data-toggle="modal" data-target="#add_pesan_modal" data-add="{{distribusi.name}}_{{distribusi.pk}}" data-animate-modal="rotateInDownLeft">PROSES</button>
+											<button type="button" class="btn btn-info hvr-wobble-horizontal" data-toggle="modal" data-target="#add_pesan_modal" data-add="{{distribusi.name}}_{{distribusi.pk}}" data-animate-modal="rotateInDownLeft">DETAIL</button>
 										</td>
 									</tr>
 									{% empty %}
@@ -82,27 +81,6 @@
 						</table>
 					</div>
 					
-					<div id="delete_modal" class="modal fade animated" role="dialog">
-						<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal">×</button>
-									<h4 class="modal-title" id="delete_modalLabel">Delete Data</h4>
-									
-								</div>
-								<div class="modal-body">
-									<h4>delete text</h4>
-								</div>
-								<div class="modal-footer">
-									<form method="GET" action="{% url 'manager:deleteDistribusi' %}">
-										<input type="hidden" class="form-control" id="distribusi-name" name="id_distribusi">
-										<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-										<button type="submit" class="btn btn-danger">Hapus</button>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
 					<div id="add_form_modal" class="modal fade animated" role="dialog">
 						<div class="modal-dialog">
 							<div class="modal-content">
@@ -165,63 +143,7 @@
 							</div>
 						</div>
 					</div>
-					<div id="add_pesan_modal" class="modal fade animated" role="dialog">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal">&times;</button>
-									<h4 class="modal-title">Input Data Pesanan</h4>
-								</div>
-								<form id="nonsingle-rice" role="form" method="POST" action="{% url 'manager:addPesanan' %}">
-									{% csrf_token %}
-									<input id="id_dist" type="hidden" name="id_distribusi">
-									<div class="modal-body">
-										<div id="pesanan0" class="row">
-											<div class="col-md-5">
-												<div class="form-group">
-													<label class="control-label" style="width: 100%;"><center style="margin-bottom: 10px;"><b>JENIS BERAS</b></center>
-														<select id="jenis_beras" name="name[]" required="">
-															<option>Pilih Jenis Beras</option>
-															{% for beras in dataBeras %}
-																<option value="{{beras.pk}}" title="{{beras.name}}_Rp.{{beras.price}}">{{beras.name}} - Rp.{{beras.price}}/Kwintal</option>
-															{% endfor %}
-														</select>
-													</label>
-												</div>
-											</div>
-											<div class="col-md-1">
-												<div class="trip-type-multi">
-													<i class="fa ti-arrow-right icon"></i>
-												</div>
-											</div>
-											<div class="col-md-5">
-												<div class="form-group">
-													<label class="control-label" style="width: 100%;"><center style="margin-bottom: 10px;"><b>JUMLAH</b></center>
-														<input type="text" class="form-control"
-														placeholder="Kwintal" name="value[]" required="">
-													</label>
-												</div>
-											</div>
-										</div>
-									</div>
-									
-									<div class="modal-footer">
-										<div class="col-sm-6">
-											<a class="btn btn-default" id="add-rice">
-												<i class="fa fa-fw ti-plus"></i> Add Rice
-											</a>
-											<label>Add Rices(Upto 5)</label>
-										</div>
-										<button type="submit" class="btn btn-succes">Submit Pesanan</button>
-										<button type="button" class="btn btn-default" data-dismiss="modal">
-										Close
-										</button>
-										
-									</div>
-								</form>
-							</div>
-						</div>
-					</div>
+
 				</div>
 			</div>
 		</div>

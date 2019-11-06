@@ -207,12 +207,7 @@
 							</ul>
 						</li>
 						<!-- ======================================================= -->
-						<li {% block aktif_data %} {% endblock %}>
-						<a href="#">
-							<i class="menu-icon ti-desktop"></i>
-							<span class="mm-text ">Data Distribusi</span>
-						</a>
-					</li>
+						
 					<!-- ======================================================= -->
 					{% elif user.is_authenticated and user.is_manager %}
 					<li {% block aktif_dashboard %} {% endblock %}>

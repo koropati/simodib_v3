@@ -145,64 +145,51 @@
 						<div class="panel-body">
 							<div>
 								<ul class="timeline timeline-update">
-									<li>
-										<div class="timeline-badge primary wow lightSpeedIn center">
-											<img src="{% static 'img/authors/avatar1.jpg' %}" height="36" width="36"
-											class="img-circle pull-right" alt="avatar-image">
-										</div>
-										<div class="timeline-panel wow slideInLeft"
-											style="display:inline-block;">
-											<div class="timeline-heading">
-												<h4 class="timeline-title">Jade Project's Status </h4>
-												<p>
-													<small class="text-primary">11 hours ago</small>
-												</p>
+									{% for log in timeline %}
+										<li>
+											<div class="timeline-badge primary wow lightSpeedIn center">
+												<img src="{% static 'img/authors/avatar1.jpg' %}" height="36" width="36"
+												class="img-circle pull-right" alt="avatar-image">
 											</div>
-											<div class="timeline-body">
-												<p>
-													Jade Project team has completed their first phase.
-												</p>
+											<div class="timeline-panel wow slideInLeft"
+												style="display:inline-block;">
+												<div class="timeline-heading">
+													<h4 class="timeline-title">{{log.taken_distribution.kurir.user.first_name}} {{log.taken_distribution.kurir.user.last_name}}</h4>
+													<p>
+														<small class="text-primary">{{log.date}}</small>
+													</p>
+												</div>
+												<div class="timeline-body">
+													<p>
+														{{log.status}}
+													</p>
+												</div>
 											</div>
-										</div>
-									</li>
-									<li>
-										<div class="timeline-badge info wow lightSpeedIn center">
-											<img src="{% static 'img/authors/avatar.jpg' %}" height="36" width="36"
-											class="img-circle pull-right" alt="avatar-image">
-										</div>
-										<div class="timeline-panel wow slideInLeft">
-											<div class="timeline-heading">
-												<h4 class="timeline-title">Tinder Project</h4>
-												<p>
-													<small class="text-primary">Sept 10, 2016</small>
-												</p>
+										</li>
+										{% empty %}
+										<li>
+											<div class="timeline-badge primary wow lightSpeedIn center">
+												<img src="{% static 'img/authors/avatar1.jpg' %}" height="36" width="36"
+												class="img-circle pull-right" alt="avatar-image">
 											</div>
-											<div class="timeline-body">
-												<p>
-													Tinder Project's Final review has completed.
-												</p>
+											<div class="timeline-panel wow slideInLeft"
+												style="display:inline-block;">
+												<div class="timeline-heading">
+													<h4 class="timeline-title">Data Log Perjalanan</h4>
+													<p>
+														Data tgl Kosong
+													</p>
+												</div>
+												<div class="timeline-body">
+													<p>
+														Log Perjalanan Kosong
+													</p>
+												</div>
 											</div>
-										</div>
-									</li>
-									<li>
-										<div class="timeline-badge default wow lightSpeedIn center">
-											<img src="{% static 'img/authors/avatar2.jpg' %}" height="36" width="36"
-											class="img-circle pull-right" alt="avatar-image">
-										</div>
-										<div class="timeline-panel wow slideInLeft">
-											<div class="timeline-heading">
-												<h4 class="timeline-title">A new branch in Virginia.</h4>
-												<p>
-													<small class="text-primary">Jan 02, 2017</small>
-												</p>
-											</div>
-											<div class="timeline-body">
-												<p>
-													Planning to have a branch in virginia in the coming year.
-												</p>
-											</div>
-										</div>
-									</li>
+										</li>
+										
+									{% endfor %}
+									
 								</ul>
 							</div>
 						</div>
@@ -564,6 +551,22 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript" src="{% static 'vendors/advanced_newsTicker/js/newsTicker.js' %}"></script>
+<script type="text/javascript">
+	//auto timeline update panel
+if ($('.timeline-update').length > 0) {
+$('.timeline-update').newsTicker({
+row_height: 117,
+max_rows: 4,
+speed: 2000,
+direction: 'up',
+duration: 3500,
+autostart: 1,
+pauseOnHover: 1
+});
+}
+//auto timeline update panel ends
+</script>
 <!-- /#right -->
 <div class="background-overlay"></div>
 {% endblock %}

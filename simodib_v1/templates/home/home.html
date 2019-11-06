@@ -1,10 +1,25 @@
 {% extends 'home/base.html' %}
 {% load static %}
 {% block content %}
+	{% if message %}
+		<script>
+		$(document).ready(function() {
+		new PNotify({
+		type: '{{typeMsg}}',
+		title: 'Message',
+		text: '{{message}}',
+		});
+		$("#jenis_beras").select2({
+				theme: "bootstrap",
+				width: "100%",
+			});
+		});
+		</script>
+	{% endif %}
 	<div class="row">
-		<div class="profile-widget text-center">
+		<div class="profile-widget">
 			<div class="bg-landing-page bg-profile"></div>
-			<div class="col-md-6">
+			<div class="col-md-6 text-center">
 				<img src="{% static 'img/logo_aja.png' %}" class="thumb-lg img-circle img-thumbnail" alt="img" height="200" width="200">
 				<h4>Guest User</h4>
 				<h6>You Must Login to get some Access</h6>
@@ -16,8 +31,16 @@
 				<p class="m-t-20 clearfix p-10">It has survived not only five centuries, but also the
 					leap into
 				electronic typesetting.</p>
+				<div class="panel text-left" id="timeline_kurir">
+					<div class="panel-heading">
+						<h3 class="panel-title">Timeline Distribusi</h3>
+					</div>
+					<div class="panel-body" id="timeline_perjalanan">
+						
+					</div>
+				</div>
 			</div>
-			<div class="col-md-6">
+			<div class="col-md-6 text-center">
 				<br>
 				<div class="panel panel-info">
 					<div class="panel-heading">
@@ -29,9 +52,10 @@
 								<img src="{% static 'img/loupe.png' %}" alt="img" height="120" width="120">
 							</div>
 							<br>
-							<form>
+							<form id="cari_kiriman" name="cari_kiriman" role="form" onsubmit="validateForm()">
+								{% csrf_token %}
 								<div class="input-group">
-									<input type="text" class="form-control" placeholder="Masukan Kode Pengiriman">
+									<input type="text" class="form-control" placeholder="Masukan Kode Pengiriman" name="id_taken" id="id_taken">
 									<span class="input-group-btn">
 										<button class="btn btn-info" type="submit">Cari</button>
 									</span>
@@ -46,6 +70,20 @@
 								</p>
 							</div>
 						</div>
+					</div>
+				</div>
+				<div class="panel text-left" id="panel_cari">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+						<i class="fa fa-fw ti-key"></i> Data Pencarian
+						</h3>
+						<span class="pull-right">
+							<i class="fa fa-fw ti-angle-up clickable"></i>
+							<i class="fa fa-fw ti-close removepanel clickable"></i>
+						</span>
+					</div>
+					<div class="panel-body" id="hasil_cari">
+						
 					</div>
 				</div>
 			</div>
@@ -131,16 +169,188 @@
 					</div>
 				</div>
 			</div>
-			<div class="" id="footer" style=" position: absolute; bottom: 0; width: 100%;">
-				<div class="social_icons p-10 text-white bg-landing-page">
-					<i class="ti-facebook" aria-hidden="true"></i>
-					<i class="ti-twitter" aria-hidden="true"></i>
-					<i class="ti-google" aria-hidden="true"></i>
-					<i class="ti-youtube" aria-hidden="true"></i>
-				</div>
+			
+		</div>
+	</div>
+	<div class="row" style=" clear: both;
+    position: relative;
+    height: 0;
+    margin-top: 200px;">
+		<div class="" id="footer" >
+			<div class="social_icons p-10 text-white bg-landing-page">
+				<i class="ti-facebook" aria-hidden="true"></i>
+				<i class="ti-twitter" aria-hidden="true"></i>
+				<i class="ti-google" aria-hidden="true"></i>
+				<i class="ti-youtube" aria-hidden="true"></i>
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript" src="{% static 'vendors/advanced_newsTicker/js/newsTicker.js' %}"></script>
+	<script type="text/javascript">
+		$('.timeline-update').newsTicker({
+			row_height: 50,
+			max_rows: 4,
+			speed: 2000,
+			direction: 'up',
+			duration: 3500,
+			autostart: 1,
+			pauseOnHover: 1
+		});
+		$(document).on('submit','#cari_kiriman',function(e){
+			e.preventDefault();
+			$.ajax({
+				type:'POST',
+				url:"{% url 'home:cariDistribusi' %}",
+				data:{
+					id_taken:$('#id_taken').val(),
+					csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+				},
+				dataType:  'json',
+				success: function  (data) {
+					var number = 1;
+					console.log(data);
+					let rows =  '';
+					let rows2 = '';
+					var lastData = data.dataDist.length;
+					data.dataDist.forEach(dataDist => {
+						if(number==1){
+							rows += `
+							<div class="form-group">
+											<label for="status_distribusi" class="control-label">
+																Status
+											</label>
+											<div class="input-group">
+															<span class="input-group-addon">
+																			<i class="fa fa-fw ti-pencil"></i>
+															</span>
+															<input type="text" id="status_distribusi" class="form-control" placeholder="Status" value="${dataDist.status_antar}" disabled="">
+											</div>
+							</div>
+							`;
+						}
+						else if(number==2){
+							rows +=`
+							<div class="form-group">
+										<label for="pemesan" class="control-label">
+													Pemesan
+										</label>
+									<div class="input-group">
+												<span class="input-group-addon">
+															<i class="fa fa-fw ti-user"></i>
+												</span>
+												<input type="text" id="pemesan" class="form-control" placeholder="Pemesan" value="${dataDist.ordered_by}" disabled="">
+										</div>
+							</div>
+							<div class="form-group">
+										<label for="alamat" class="control-label">Pengiriman Ke: </label>
+											<textarea id="alamat" class="form-control resize_vertical" maxlength="225" rows="4" disabled="">${dataDist.address}</textarea>
+							</div>
+							`;
+						}else if (number==3){
+							rows2 +=`
+							<div style="overflow-y: scroll; height: 280px">
+								<ul class="timeline timeline-update">
+									<li>
+						<div class="timeline-badge primary wow lightSpeedIn center">
+								<img src="{% static 'img/timeline_track.png' %}" height="36" width="36" class="img-circle pull-right" alt="avatar-image">
+						</div>
+						<div class="timeline-panel wow slideInLeft" style="display:inline-block;">
+								<div class="timeline-heading">
+										<h4 class="timeline-title">Kurir Simodib</h4>
+										<p>
+												<small class="text-primary">${dataDist.date}</small>
+										</p>
+								</div>
+								<div class="timeline-body">
+										<p>
+											${dataDist.status}
+										</p>
+								</div>
+						</div>
+				</li>
+									`;
+								}else if (number==lastData){
+									rows2 += `
+									<li>
+						<div class="timeline-badge primary wow lightSpeedIn center">
+								<img src="{% static 'img/timeline_track.png' %}" height="36" width="36" class="img-circle pull-right" alt="avatar-image">
+						</div>
+						<div class="timeline-panel wow slideInLeft" style="display:inline-block;">
+								<div class="timeline-heading">
+										<h4 class="timeline-title">Kurir Simodib</h4>
+										<p>
+												<small class="text-primary">${dataDist.date}</small>
+										</p>
+								</div>
+								<div class="timeline-body">
+										<p>
+											${dataDist.status}
+										</p>
+								</div>
+						</div>
+				</li>
+								</ul>
+	</div>
+							`;
+						}
+						else{
+							rows2 +=`
+							<li>
+				<div class="timeline-badge primary wow lightSpeedIn center">
+						<img src="{% static 'img/timeline_track.png' %}" height="36" width="36" class="img-circle pull-right" alt="avatar-image">
+				</div>
+				<div class="timeline-panel wow slideInLeft" style="display:inline-block;">
+						<div class="timeline-heading">
+								<h4 class="timeline-title">Kurir Simodib</h4>
+								<p>
+										<small class="text-primary">${dataDist.date}</small>
+								</p>
+						</div>
+						<div class="timeline-body">
+								<p>
+									${dataDist.status}
+								</p>
+						</div>
+				</div>
+		</li>
+							`;
+						}
+							
+							number = number+1;
+					});
+					$('#panel_cari > #hasil_cari').html(rows);
+					$('#timeline_kurir > #timeline_perjalanan').html(rows2);
+					$('#footer').css('bottom',0);
+					new PNotify({
+						type: 'success',
+						title: 'Message',
+						text: 'Pencarian Distribusi Ditemuakan',
+					});
+				},
+				error: function(xhr, Status, error){
+					$('#panel_cari > #hasil_cari').html("");
+					$('#timeline_kurir > #timeline_perjalanan').html("");
+					new PNotify({
+						type: 'warning',
+						title: 'Message',
+						text: 'Data Distribusi Tidak Ditemukan',
+					});
+				}
+			});
+		});
+		
+		function validateForm(){
+			var id_taken = document.getElementById('id_taken').value;
+			if (id_taken == null || id_taken == "") {
+			new PNotify({
+					type: 'warning',
+					title: 'Message',
+					text: 'Kolom Kode Pengiriman Masih Kosong',
+				});
+		return false;
+		}
+		}
+	</script>
 {% endblock %}
 {% block extraCss %}
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -150,6 +360,16 @@
 	<link href="{% static 'css/buttons_sass.css' %}" rel="stylesheet">
 	<link href="{% static 'css/advbuttons.css' %}" rel="stylesheet">
 	<!-- End Button -->
+	<!-- PNotify -->
+	<link rel="stylesheet" href="{% static 'vendors/animate/animate.min.css' %}"/>
+	<link rel="stylesheet" href="{% static 'vendors/pnotify/css/pnotify.css' %}">
+	<link href="{% static 'vendors/pnotify/css/pnotify.brighttheme.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'vendors/pnotify/css/pnotify.buttons.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'vendors/pnotify/css/pnotify.mobile.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'vendors/pnotify/css/pnotify.history.css' %}" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/custom_css/toastr_notificatons.css' %}">
+	<!-- End PNotify -->
+	<link href="{% static 'css/custom_css/dashboard1_timeline.css' %}" rel="stylesheet"/>
 {% endblock %}
 {% block extraJs %}
 	<!-- Button -->
@@ -158,4 +378,20 @@
 	<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/ladda.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/custom_js/button_main.js' %}"></script>
 	<!-- End Button -->
+	<!-- PNotify -->
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.animate.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.buttons.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.confirm.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.nonblock.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.mobile.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.desktop.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.history.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.callbacks.js' %}"></script>
+	<script src="{% static 'js/custom_js/notifications.js' %}"></script>
+	<!-- End Notify -->
+	<!--swiper-->
+	<script type="text/javascript" src="{% static 'vendors/swiper/js/swiper.min.js' %}"></script>
+	<!--chartjs-->
+	<script type="text/javascript" src="{% static 'vendors/advanced_newsTicker/js/newsTicker.js' %}"></script>
 {% endblock %}

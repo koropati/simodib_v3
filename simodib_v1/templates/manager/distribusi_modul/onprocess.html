@@ -27,7 +27,7 @@
 		<script>
 		$(document).ready(function() {
 		new PNotify({
-		type: 'success',
+		type: '{{typeMsg}}',
 		title: 'Message',
 		text: '{{message}}',
 		});
@@ -71,8 +71,8 @@
 										<td class="align-middle">{{ distribusi.distribution.address }}</td>
 										<td class="align-middle">{{ distribusi.kurir.user.first_name }} {{ distribusi.kurir.user.last_name }}</td>
 										<td>
-											<button type="button" class="btn btn-danger modalcolor hvr-wobble-horizontal" data-toggle="modal" data-target="#delete_modal" data-distribusi="{{distribusi.distribution.name}}_{{distribusi.distribution.pk}}" data-animate-modal-delete="jello" data-modalcolor="#ff6666">HAPUS</button>
-											<button type="button" class="btn btn-warning modalcolor hvr-wobble-horizontal" data-toggle="modal" data-target="#batal_modal" data-distribusi="{{distribusi.distribution.name}}_{{distribusi.distribution.pk}}" data-animate-modal-delete="jello" data-modalcolor="#ff6666">BATALKAN</button>
+											{# <button type="button" class="btn btn-danger modalcolor hvr-wobble-horizontal" data-toggle="modal" data-target="#delete_modal" data-distribusi="{{distribusi.distribution.name}}_{{distribusi.distribution.id}}" data-animate-modal-delete="jello" data-modalcolor="#ff6666">HAPUS</button> #}
+											<button type="button" class="btn btn-warning modalcolor hvr-wobble-horizontal" data-toggle="modal" data-target="#batal_modal" data-distribusi="{{distribusi.distribution.name}}_{{distribusi.distribution.id}}" data-animate-modal-delete="jello" data-modalcolor="#ff6666">BATALKAN</button>
 											<a href="{% url 'manager:viewOnprocessTrack' pk=distribusi.distribution.pk pk2=distribusi.pk%}">
 												<button class="btn btn-success hvr-wobble-horizontal">LACAK</button>
 											</a>

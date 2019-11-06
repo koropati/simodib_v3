@@ -28,7 +28,7 @@
 		$(document).ready(function() {
 		$('#table_unfinished').DataTable();
 		new PNotify({
-		type: 'success',
+		type: '{{typeMsg}}',
 		title: 'Message',
 		text: '{{message}}',
 		});
@@ -378,6 +378,12 @@
 				},
 				dataType:  'json',
 				success:function(data){
+					new PNotify({
+					type: 'success',
+					title: 'Message',
+					text: 'Berhasil Menambahkan Kurir Pada Distribusi',
+					});
+
 					let rows =  '';
 					var noUrut = 1;
 					var lastData = data.distribusi.length;
@@ -399,7 +405,8 @@
 					});
 					$('#table_unfinished > tbody').html(rows);
 					$("#add_kurir_modal")[0].reset();
-					$('#add_kurir_form').modal('hide');
+					$('#add_kurir_modal').modal('hide');
+					
 				}
 			})
 		});
