@@ -1,11 +1,46 @@
 from django.urls import include, path
-from .views import company, kurir, manager, home
+from .views import company, kurir, manager, home, adm
  
 urlpatterns = [
 	path('', company.home, name='home'),
     path('closed/', company.closedPortal, name='closed'),
     path('updatelog/', company.updatelog, name='updatelog'),
     
+    path('adm/', include(([
+        path('', adm.dashboard, name='dashboard_adm'),
+        path('kurir/', adm.viewKurir, name='viewKurir'),
+        path('kurir/<int:pk>/', adm.viewKurirDetail, name='viewKurirDetail'),
+        path('kurir/<int:pk>/validate/', adm.validateKurir, name='validateKurir'),
+        path('kurir/<int:pk>/unvalidate/', adm.unvalidateKurir, name='unvalidateKurir'),
+        path('kurir/delete/', adm.deleteKurir, name='deleteKurir'),
+
+        path('manager/', adm.viewManager, name='viewManager'),
+        path('manager/<int:pk>/', adm.viewManagerDetail, name='viewManagerDetail'),
+        path('manager/delete/', adm.deleteManager, name='deleteManager'),
+
+        path('setting/portal/', adm.viewPortal, name='viewPortal'),
+        path('setting/portal/Dist/', adm.viewPortalDist, name='viewPortalDist'),
+        path('setting/portal/viewToken', adm.viewToken, name='viewToken'),
+
+        path('beras/', adm.viewBeras, name='viewBeras'),
+        path('beras/get', adm.getBeras, name='getBeras'),
+        path('beras/delete/', adm.deleteBeras, name='deleteBeras'),
+        path('beras/tambah-stock/', adm.tambahStockBeras, name='tambahStockBeras'),
+
+        path('distribusi/', adm.viewDistribusi, name='viewDistribusi'),
+        path('distribusi/add', adm.addPesanan, name='addPesanan'),
+        path('distribusi/delete/', adm.deleteDistribusi, name='deleteDistribusi'),
+        path('distribusi/batal/', adm.batalDistribusi, name='batalDistribusi'),
+        path('distribusi/unfinished/', adm.viewUnfinished, name='viewUnfinished'),
+        path('distribusi/finished/', adm.viewFinished, name='viewFinished'),
+        path('distribusi/onprocess/', adm.viewOnprocess, name='viewOnprocess'),
+        path('distribusi/onprocess/detail/<int:pk>/<int:pk2>/', adm.viewOnprocessDetail, name='viewOnprocessDetail'),
+        path('distribusi/onprocess/track/<int:pk>/<int:pk2>/', adm.viewOnprocessTrack, name='viewOnprocessTrack'),
+        path('distribusi/addKurir', adm.addKurir, name='addKurir'),
+        path('distribusi/<int:pk>/', adm.viewDistribusiDetail, name='viewDistribusiDetail'),
+  
+    ], 'adm'), namespace='adm')),
+
 
     path('home/', include(([
         path('', home.home, name='home_guest'),
@@ -23,11 +58,7 @@ urlpatterns = [
         path('distribusi/onprocess/getLog/', kurir.getLogPerjalanan, name='getLogPerjalanan'),
         path('distribusi/onprocess/selesai', kurir.distribusiSelesai, name='distribusiSelesai'),
         path('distribusi/finished/', kurir.viewFinished, name='viewFinished_kurir'),
-        
-        # path('', kurir.DistributionView.as_view(), name='distribution_list'),
-        # path('interests/', kurir.StudentInterestsView.as_view(), name='student_interests'),
-        # path('taken/', kurir.TakenQuizListView.as_view(), name='taken_quiz_list'),
-        # path('quiz/<int:pk>/', kurir.take_quiz, name='take_quiz'),
+        path('distribusi/finished/detail/', kurir.viewDetailFinish, name='viewDetailFinish_kurir'),
     ], 'company'), namespace='kurir')),
 
     path('manager/', include(([
@@ -55,13 +86,6 @@ urlpatterns = [
         path('distribusi/onprocess/track/<int:pk>/<int:pk2>/', manager.viewOnprocessTrack, name='viewOnprocessTrack'),
         path('distribusi/addKurir', manager.addKurir, name='addKurir'),
         path('distribusi/<int:pk>/', manager.viewDistribusiDetail, name='viewDistribusiDetail'),
-        # path('quiz/add/', teachers.QuizCreateView.as_view(), name='quiz_add'),
-        # path('quiz/<int:pk>/', teachers.QuizUpdateView.as_view(), name='quiz_change'),
-        # path('quiz/<int:pk>/delete/', teachers.QuizDeleteView.as_view(), name='quiz_delete'),
-        # path('quiz/<int:pk>/results/', teachers.QuizResultsView.as_view(), name='quiz_results'),
-        # path('quiz/<int:pk>/question/add/', teachers.question_add, name='question_add'),
-        # path('quiz/<int:quiz_pk>/question/<int:question_pk>/', teachers.question_change, name='question_change'),
-        # path('quiz/<int:quiz_pk>/question/<int:question_pk>/delete/', teachers.QuestionDeleteView.as_view(), name='question_delete'),
     ], 'company'), namespace='manager')),
 
 ]

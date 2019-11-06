@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block aktif_dashboard_adm %}
+	class="active"
+{% endblock %}
+{% block content-header %}
+	<h1>PORTAL SIGN UP</h1>
+	<ol class="breadcrumb">
+		<li>
+			<a href="{% url 'home' %}">
+				<i class="fa fa-fw ti-home"></i> Dashboard
+			</a>
+		</li>
+		<li>
+			Setting
+		</li>
+		<li class="active">
+			Portal
+		</li>
+	</ol>
+{% endblock %}
+{% block content %}
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+					<i class="fa fa-fw ti-pencil"></i> Setting Portal
+					</h3>
+					<span class="pull-right hidden-xs">
+						<i class="fa fa-fw ti-angle-up clickable"></i>
+					</span>
+				</div>
+				<div class="panel-body" style="background-color: {% if port_kurir == '1' %}#eeeeee{% else %}#e6e5e6{% endif %}">
+				<div class="row">
+					<div class="col-md-6">
+						<center>
+						{% if port_kurir == '1' %}
+							<img src="{% static 'img/open_portal.gif' %}" style='width:100%;'>
+						{% else %}
+							<img src="{% static 'img/close_portal.gif' %}" style='width:100%;'>
+						{% endif %}
+						</center>
+					</div>
+					<div class="col-md-6">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="panel panel-primary">
+									<div class="panel-heading">
+										<h3 class="panel-title">
+										PORTAL STAF DISTRIBUSI
+										</h3>
+									</div>
+									<div class="panel-body">
+										<div class="col-md-12">
+											<form method="post" action="{% url 'adm:viewPortalDist'%}">
+												{% csrf_token %}
+												<div class="row">
+													{% if port_manager == '1' %}
+														<input type="hidden" name="status" value="0">
+														<div class="alert alert-success">
+															<p>
+																Portal Pendaftaran Staf Distribusi TERBUKA
+															</p>
+														</div>
+													{% else %}
+														<input type="hidden" name="status" value="1">
+														<div class="alert alert-warning">
+															<p>
+																Portal Pendaftaran Staf Distribusi TERTUTUP
+															</p>
+														</div>
+													{% endif %}
+												</div>
+												<div class="row">
+													<center>
+													<button class="btn {% if port_manager == '1' %}
+														button button-circle button-caution-flat hvr-grow
+													{% else %}
+														button button-circle button-royal-flat hvr-buzz-out
+													{% endif %}" type="submit">
+													{% if port_manager == '1' %}
+														<b>TUTUP</b>
+													{% else %}
+														<b>BUKA</b>
+													{% endif %}
+													</button>
+													</center>
+													
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+								
+							</div>
+							<div class="col-md-6">
+								<div class="panel panel-success">
+									<div class="panel-heading">
+										<h3 class="panel-title">
+										PORTAL STAF KURIR
+										</h3>
+									</div>
+									<div class="panel-body">
+										<div class="col-md-12">
+											<form method="post" action="{% url 'adm:viewPortal'%}">
+												{% csrf_token %}
+												<div class="row">
+													{% if port_kurir == '1' %}
+														<input type="hidden" name="status" value="0">
+														<div class="alert alert-success">
+															<p>
+																Portal Pendaftaran Staf Kurir TERBUKA
+															</p>
+														</div>
+													{% else %}
+														<input type="hidden" name="status" value="1">
+														<div class="alert alert-warning">
+															<p>
+																Portal Pendaftaran Staf kurir TERTUTUP
+															</p>
+														</div>
+													{% endif %}
+												</div>
+												<div class="row">
+													<center>
+													<button class="btn {% if port_kurir == '1' %}
+														button button-circle button-caution-flat hvr-grow
+													{% else %}
+														button button-circle button-royal-flat hvr-buzz-out
+													{% endif %}" type="submit">
+													{% if port_kurir == '1' %}
+														<b>TUTUP</b>
+													{% else %}
+														<b>BUKA</b>
+													{% endif %}
+													</button>
+													</center>
+													
+												</div>
+											</form>
+										</div>
+										
+									</div>
+								</div>
+							</div>
+							
+						</div>
+						
+						
+						<br>
+						<h5>Token Sign Up Kurir</h5>
+						<form method="post" action="{% url 'adm:viewToken'%}">
+							{% csrf_token %}
+							<div class="input-group">
+								<input type="text" name="token_kurir" class="form-control" value="{{token_kurir}}" disabled="">
+								<span class="input-group-btn">
+									<button class="btn btn-success" type="submit">PERBAHARUI TOKEN</button>
+								</span>
+							</div>
+						</form>
+						<div class="input-group">
+							<input type="text" class="form-control" value="Url Menuju Pendaftaran Kurir/Manager Distribusi" disabled="">
+							<span class="input-group-btn">
+								<a href="{% url 'signup'%}" target="_blank">
+									<button class="btn btn-info" type="button">Go!</button>
+								</a>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block extraCss %}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!-- Data Tables -->
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/dataTables.bootstrap.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/buttons.bootstrap.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/colReorder.bootstrap.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/dataTables.bootstrap.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/rowReorder.bootstrap.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/buttons.bootstrap.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/scroller.bootstrap.css' %}">
+<!-- End Data Tables -->
+<!-- Button -->
+<link href="{% static 'vendors/hover/css/hover-min.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'vendors/laddabootstrap/css/ladda-themeless.min.css' %}">
+<link href="{% static 'css/buttons_sass.css' %}" rel="stylesheet">
+<link href="{% static 'css/advbuttons.css' %}" rel="stylesheet">
+<!-- End Button -->
+{% endblock %}
+{% block extraJs %}
+<!-- dataTables -->
+<script type="text/javascript" src="{% static 'vendors/datatables/js/jquery.dataTables.js' %}"></script>
+<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.bootstrap.js' %}"></script>
+<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.buttons.js' %}"></script>
+<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.colReorder.js' %}"></script>
+<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.responsive.js' %}"></script>
+<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.rowReorder.js' %}"></script>
+<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.colVis.js' %}"></script>
+<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.html5.js' %}"></script>
+<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.bootstrap.js' %}"></script>
+<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.print.js' %}"></script>
+<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.scroller.js' %}"></script>
+<script src="{% static 'js/custom_js/advanced_datatables.js' %}" type="text/javascript"></script>
+<!-- End dataTables -->
+<!-- Button -->
+<script type="text/javascript" src="{% static 'vendors/Buttons/js/buttons.js' %}"></script>
+<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/spin.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/ladda.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/custom_js/button_main.js' %}"></script>
+<!-- End Button -->
+{% endblock %}

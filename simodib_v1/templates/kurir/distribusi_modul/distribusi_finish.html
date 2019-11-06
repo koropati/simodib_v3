@@ -69,7 +69,9 @@
 										<td class="align-middle">{{ distribusi.distribution.ordered_by }}</td>
 										<td class="align-middle">{{ distribusi.distribution.address }}</td>
 										<td>
-											<button type="button" class="btn btn-info hvr-wobble-horizontal" data-toggle="modal" data-target="#add_pesan_modal" data-add="{{distribusi.name}}_{{distribusi.pk}}" data-animate-modal="rotateInDownLeft">DETAIL</button>
+											<a href="{% url 'kurir:viewDetailFinish_kurir' pk=distribusi.distribution.pk pk2=distribusi.pk%}">
+											</a>
+											<button type="button" class="btn btn-info hvr-wobble-horizontal">DETAIL</button>
 										</td>
 									</tr>
 									{% empty %}

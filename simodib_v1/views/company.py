@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from ..models import PortalSignUp, Kurir, Distribution, TakenDistribution, DataLogPerjalanan
+from ..models import PortalSignUp, Kurir, Distribution, TakenDistribution, DataLogPerjalanan, Rice
 class SignUpView(TemplateView):
 	portal_kurir = '';
 	model = PortalSignUp
@@ -44,10 +44,15 @@ def home(request):
     if request.user.is_authenticated:
         if request.user.is_manager:
             return redirect('manager:dashboard_view')
+        elif request.user.is_superuser:
+            return redirect('adm:dashboard_adm')
         else:
             return redirect('kurir:dashboard_kurir')
     totalKurir = Kurir.objects.all().count()
-    return render(request, 'home/home.html',{'totalKurir':totalKurir})
+    totalDistribusi = TakenDistribution.objects.all().count()
+    totalJenisBeras = Rice.objects.all().count()
+    totalDist = Distribution.objects.all().count()
+    return render(request, 'home/home.html',{'totalKurir':totalKurir, 'totalDistribusi':totalDistribusi, 'totalJenisBeras': totalJenisBeras,'totalDist':totalDist})
 
 @csrf_exempt
 def updatelog(request):
@@ -67,4 +72,3 @@ def updatelog(request):
         return HttpResponse('sukses')
     else:
         return HttpResponse('gagal')
-

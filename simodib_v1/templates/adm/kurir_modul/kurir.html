@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block aktif_kurir_adm %}
+	class="active"
+{% endblock %}
+{% block content-header %}
+	<h1>DATA KURIR</h1>
+	<ol class="breadcrumb">
+		<li>
+			<a href="{% url 'home' %}">
+				<i class="fa fa-fw ti-home"></i> Dashboard
+			</a>
+		</li>
+		<li class="active">
+			Data Kurir
+		</li>
+	</ol>
+{% endblock %}
+{% block content %}
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel filterable">
+				<div class="panel-heading clearfix  ">
+					<div class="panel-title pull-left">
+						<i class="ti-export"></i> <b>DATA KURIR</b>
+					</div>
+					<div class="tools pull-right">
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="table-responsive">
+						<table class="table table-striped table-bordered" id="table_kurir">
+							<thead>
+								<tr>
+									<th>No</th>
+									<th>Nama </th>
+									<th>Email Kurir</th>
+									<th>No.Hp</th>
+									<th>Alamat</th>
+									<th>Status Akun</th>
+									<th>Aksi</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for kurir in kurirs %}
+									<tr>
+										<td>{{ forloop.counter }}</td>
+										<td>{{ kurir.user.first_name }} {{ kurir.user.last_name}}</td>
+										<td class="align-middle">{{ kurir.email }}</td>
+										<td class="align-middle">{{ kurir.no_hp }}</td>
+										<td class="align-middle">{{ kurir.alamat }}</td>
+										<td class="align-middle">
+											{% if kurir.status_akun != '1' %}
+												<span class="text-danger">Minta Konfirmasi</span>
+											{% else %}
+												<span class="text-success">Tervalidasi</span>
+											{% endif %}
+										</td>
+										<td>
+											<button type="button" class="btn btn-danger hvr-wobble-horizontal" data-toggle="modal" data-target="#delete_modal" data-kurir="{{kurir.user.first_name}}_{{kurir.pk}}">Delete</button>
+											<a href="{% url 'adm:viewKurirDetail' pk=kurir.pk %}"><button class="btn btn-info hvr-wobble-to-top-right">Detail
+											</button></a>
+											
+										</td>
+									</tr>
+									{% empty %}
+									<tr>
+										<td class="bg-light text-center font-italic" colspan="4">No Kurir Data List for your right now.</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+					
+					<div class="modal fade" id="delete_modal" tabindex="-1" role="dialog" aria-labelledby="delete_modalLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h2 class="modal-title" id="delete_modalLabel">Delete Kurir</h2>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<h4>delete text</h4>
+								</div>
+								<div class="modal-footer">
+									<form method="GET" action="{% url 'adm:deleteKurir' %}">
+										<input type="hidden" class="form-control" id="kurir-name" name="id_kurir">
+										<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+										<button type="submit" class="btn btn-danger">Delete</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- AJAX nya Disini! -->
+	<script type="text/javascript">
+		$(document).on('submit','#delete_modal',function(ev){
+			ev.preventDefault();
+			$.ajax({
+				type:'GET',
+				url:"{% url 'adm:deleteKurir' %}",
+				data:{
+					id_kurir:$('#kurir-name').val(),
+					// csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+				},
+				dataType:  'json',
+				success:function(data){
+					let rows =  '';
+					var noUrut = 1;
+					var lastData = data.kurir.length;
+					data.kurir.forEach(kurir => {
+						rows += `
+							<tr>
+								<td>${noUrut}</td>
+								<td>${kurir.first_name} ${kurir.last_name}</td>
+								<td class="align-middle">${ kurir.email }</td>
+								<td class="align-middle">${ kurir.no_hp }</td>
+								<td class="align-middle">${ kurir.alamat }</td>
+								<td class="align-middle">
+											${% if kurir.status_akun != '1' %}
+												<span class="text-danger">Minta Konfirmasi</span>
+											${% else %}
+												<span class="text-success">Tervalidasi</span>
+											${% endif %}
+								</td>
+								<td>
+									<button type="button" class="btn btn-danger hvr-wobble-horizontal" data-toggle="modal" data-target="#delete_modal" data-kurir="${kurir.user.first_name}_${kurir.user_id}">Delete</button>
+								</td>
+							</tr>`;
+						noUrut = noUrut + 1;
+					});
+					$('#table_kurir > tbody').html(rows);
+					$('#delete_modal').modal('hide');
+				}
+			})
+		});
+	</script>
+{% endblock %}
+{% block extraCss %}
+	<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+	<script src="{% static 'js/jquery-3.4.1.min.js'%}"></script>
+	<!-- Data Tables -->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/dataTables.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/buttons.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/colReorder.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/dataTables.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/rowReorder.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/buttons.bootstrap.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/scroller.bootstrap.css' %}">
+	<!-- End Data Tables -->
+	<!-- Button -->
+	<link href="{% static 'vendors/hover/css/hover-min.css' %}" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'vendors/laddabootstrap/css/ladda-themeless.min.css' %}">
+	<link href="{% static 'css/buttons_sass.css' %}" rel="stylesheet">
+	<link href="{% static 'css/advbuttons.css' %}" rel="stylesheet">
+	<!-- End Button -->
+	<!-- Modal -->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/animate/animate.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/custom_css/advanced_modals.css' %}">
+	<!-- End Modal -->
+{% endblock %}
+{% block extraJs %}
+	<!-- dataTables -->
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/jquery.dataTables.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.bootstrap.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.buttons.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.colReorder.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.responsive.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.rowReorder.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.colVis.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.html5.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.bootstrap.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.print.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.scroller.js' %}"></script>
+	<script src="{% static 'js/custom_js/advanced_datatables.js' %}" type="text/javascript"></script>
+	<!-- End dataTables -->
+	<!-- Button -->
+	<script type="text/javascript" src="{% static 'vendors/Buttons/js/buttons.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/spin.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/ladda.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/custom_js/button_main.js' %}"></script>
+	<!-- End Button -->
+	<!-- Modal -->
+	<script type="text/javascript" src="{% static 'js/custom_js/advanced_modals.js' %}"></script>
+	<script type="text/javascript">
+		$('#delete_modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget)
+		var dataKurir = button.data('kurir')
+		var arrKurir = dataKurir.split("_");
+		var namaKurir = arrKurir[0];
+		var idKurir = arrKurir[1];
+		var modal = $(this)
+		modal.find('.modal-title').text('Delete Kurir ' + namaKurir)
+		modal.find('.modal-body h4').text('Yakin Ingin Menghapus ' + namaKurir + '?')
+		modal.find('.modal-footer input').val(idKurir)
+		})
+	</script>
+	<!-- End Modal -->
+{% endblock %}

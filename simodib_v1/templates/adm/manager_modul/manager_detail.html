@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block aktif_manager_adm %}
+	class="active"
+{% endblock %}
+{% block content-header %}
+	<h1>DATA DETAIL MANAGER</h1>
+	<ol class="breadcrumb">
+		<li>
+			<a href="{% url 'home' %}">
+				<i class="fa fa-fw ti-home"></i> Dashboard
+			</a>
+		</li>
+		<li class="active">
+			Data manager
+		</li>
+	</ol>
+{% endblock %}
+{% block content %}
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel ">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+					<i class="fa fa-fw ti-pencil"></i> Form Detail Manager
+					</h3>
+					<span class="pull-right hidden-xs">
+						<i class="fa fa-fw ti-angle-up clickable"></i>
+						<i class="fa fa-fw ti-close removepanel clickable"></i>
+					</span>
+				</div>
+				<div class="panel-body">
+					<form action="#" class="form-horizontal">
+						<div class="form-body">
+							<div class="form-group">
+								<label for="inputUsername2" class="col-md-3 control-label">
+									First Name
+								</label>
+								<div class="col-md-9">
+									<div class="input-group">
+										<span class="input-group-addon">
+											<i class="fa fa-fw ti-user"></i>
+										</span>
+										<input type="text" class="form-control" value="{{manager.user.first_name}}" disabled="">
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputUsername2" class="col-md-3 control-label">
+									Last Name
+								</label>
+								<div class="col-md-9">
+									<div class="input-group">
+										<span class="input-group-addon">
+											<i class="fa fa-fw ti-user"></i>
+										</span>
+										<input type="text" class="form-control" value="{{manager.user.last_name}}" disabled="">
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputUsername2" class="col-md-3 control-label">
+									Username
+								</label>
+								<div class="col-md-9">
+									<div class="input-group">
+										<span class="input-group-addon">
+											<i class="fa fa-fw ti-user"></i>
+										</span>
+										<input type="text" class="form-control" id="inputUsername2" value="{{manager.user.username}}" disabled="">
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputEmail" class="col-md-3 control-label">
+									Email
+								</label>
+								<div class="col-md-9">
+									<div class="input-group">
+										<span class="input-group-addon">
+											<i class="fa ti-email"></i>
+										</span>
+										<input type="text" placeholder="Email Address" class="form-control" value="{{manager.email}}" disabled="">
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="keypassword" class="col-md-3 control-label">
+									Password
+								</label>
+								<div class="col-md-9">
+									<div class="input-group">
+										<span class="input-group-addon">
+											<i class="fa fa-fw ti-key"></i>
+										</span>
+										<input type="text" placeholder="Password" id="keypassword" class="form-control" value="{{manager.user.password}}" disabled="">
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputnumber2" class="col-md-3 control-label">
+									Phone Number
+								</label>
+								<div class="col-md-9">
+									<div class="input-group">
+										<span class="input-group-addon">
+											<i class="fa fa-fw ti-mobile"></i>
+										</span>
+										<input type="text" id="inputnumber2" placeholder="Phone Number" class="form-control" value="{{manager.no_hp}}" disabled="">
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label for="inputContent2" class="col-md-3 control-label">Alamat</label>
+								<div class="col-md-9">
+									<textarea id="inputContent2" rows="3" class="form-control resize_vertical" disabled="">{{manager.alamat}}</textarea>
+								</div>
+							</div>
+						</div>
+						<div class="form-actions">
+							<div class="row">
+								<div class="col-md-12">
+									<a href="{% url 'adm:dashboard_adm' %}">
+										<button type="button" class="btn btn-default">Kembali
+										</button>
+									</a>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block extraCss %}
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Data Tables -->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/dataTables.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/buttons.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/colReorder.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/dataTables.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/rowReorder.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/buttons.bootstrap.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/scroller.bootstrap.css' %}">
+	<!-- End Data Tables -->
+	<!-- Button -->
+	<link href="{% static 'vendors/hover/css/hover-min.css' %}" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'vendors/laddabootstrap/css/ladda-themeless.min.css' %}">
+	<link href="{% static 'css/buttons_sass.css' %}" rel="stylesheet">
+	<link href="{% static 'css/advbuttons.css' %}" rel="stylesheet">
+	<!-- End Button -->
+{% endblock %}
+{% block extraJs %}
+	<!-- dataTables -->
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/jquery.dataTables.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.bootstrap.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.buttons.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.colReorder.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.responsive.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.rowReorder.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.colVis.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.html5.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.bootstrap.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.print.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.scroller.js' %}"></script>
+	<script src="{% static 'js/custom_js/advanced_datatables.js' %}" type="text/javascript"></script>
+	<!-- End dataTables -->
+	<!-- Button -->
+	<script type="text/javascript" src="{% static 'vendors/Buttons/js/buttons.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/spin.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/ladda.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/custom_js/button_main.js' %}"></script>
+	<!-- End Button -->
+{% endblock %}

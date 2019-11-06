@@ -58,7 +58,12 @@
 								<div class="riot">
 									<div>
 										{% if user.is_authenticated %}
-											{{ user.username }}
+											{% if user.is_superuser%}
+												Admin Simodib
+											{% else %}
+												{{ user.first_name }} {{ user.last_name }}
+											{% endif %}
+											
 										{% endif %}
 										<span>
 											<i class="caret"></i>
@@ -71,7 +76,12 @@
 								<li class="user-header">
 									<img src="{% static 'img/authors/avatar1.png' %}" class="img-circle" alt="User Image">
 									{% if user.is_authenticated %}
-										<p>{{ user.username }}</p>
+										{% if user.is_superuser%}
+											<p>Admin Simodib</p>
+										{% else %}
+											<p>{{ user.first_name }} {{ user.last_name }}</p>
+										{% endif %}
+										
 									{% else %}
 										<p>Guest User</p>
 									{% endif %}
@@ -84,6 +94,8 @@
 											<p>User type : Manager</p>
 											{% elif user.is_authenticated and user.is_kurir %}
 											<p>User type : Kurir</p>
+											{% elif user.is_authenticated and user.is_superuser%}
+											<p>User type : Admin</p>
 										{% else %}
 											<p>User type : Guest</p>
 										{% endif %}
@@ -91,7 +103,7 @@
 								</li>
 								<li class="p-t-3">
 									<a href="#">
-										<i class="fa fa-fw ti-user"></i> My Profile
+										<i class="fa fa-fw ti-user"></i> {{ user.username }}
 									</a>
 								</li>
 								<li role="presentation"></li>
@@ -139,7 +151,11 @@
 										<div class="content-profile">
 											<h4 class="media-heading">
 											{% if user.is_authenticated %}
-												<p>{{ user.username }}</p>
+												{% if user.is_superuser%}
+													<p>Admin Simodib</p>
+												{% else %}
+													<p>{{ user.first_name }} {{ user.last_name }}</p>
+												{% endif %}
 											{% else %}
 												<p>Guest User</p>
 											{% endif %}
@@ -173,41 +189,41 @@
 								<ul class="navigation">
 									{% if user.is_authenticated and user.is_kurir %}
 										<li {% block aktif_dashboard_kurir %} {% endblock %}>
-										<a href="#">
+										<a href="{% url 'kurir:dashboard_kurir'%}">
 											<i class="menu-icon ti-desktop"></i>
 											<span class="mm-text ">Dashboard</span>
 										</a>
 									</li>
 									<!-- ======================================================= -->
 									<li class="menu-dropdown {% block aktif_distribusi_kurir %} {% endblock %}">
-										<a href="javascript:void(0)">
-											<i class="menu-icon ti-check-box"></i>
-											<span>Distribusi</span>
-											<span class="fa arrow"></span>
-										</a>
-										<ul class="sub-menu">
-											<li {% block belum_diproses %} {% endblock %}>
-											<a href="{% url 'kurir:viewUnfinished_kurir' %}">
-												<i class="fa fa-fw ti-receipt"></i> Belum diproses
-												<span class="fa arrow"></span>
-											</a>
-										</li>
-										<li {% block dalam_proses %} {% endblock %}>
-										<a href="{% url 'kurir:viewOnprocess_kurir' %}">
-											<i class="fa fa-fw ti-receipt"></i> Dalam Proses
+									<a href="javascript:void(0)">
+										<i class="menu-icon ti-check-box"></i>
+										<span>Distribusi</span>
+										<span class="fa arrow"></span>
+									</a>
+									<ul class="sub-menu">
+										<li {% block belum_diproses %} {% endblock %}>
+										<a href="{% url 'kurir:viewUnfinished_kurir' %}">
+											<i class="fa fa-fw ti-receipt"></i> Belum diproses
 											<span class="fa arrow"></span>
 										</a>
 									</li>
-									<li {% block distribusi_selesai %} {% endblock %}>
-									<a href="{% url 'kurir:viewFinished_kurir' %}">
-										<i class="fa fa-fw ti-receipt"></i> Distribusi Selesai
+									<li {% block dalam_proses %} {% endblock %}>
+									<a href="{% url 'kurir:viewOnprocess_kurir' %}">
+										<i class="fa fa-fw ti-receipt"></i> Dalam Proses
 										<span class="fa arrow"></span>
 									</a>
 								</li>
-							</ul>
-						</li>
-						<!-- ======================================================= -->
-						
+								<li {% block distribusi_selesai %} {% endblock %}>
+								<a href="{% url 'kurir:viewFinished_kurir' %}">
+									<i class="fa fa-fw ti-receipt"></i> Distribusi Selesai
+									<span class="fa arrow"></span>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<!-- ======================================================= -->
+					
 					<!-- ======================================================= -->
 					{% elif user.is_authenticated and user.is_manager %}
 					<li {% block aktif_dashboard %} {% endblock %}>
@@ -218,65 +234,59 @@
 				</li>
 				<!-- ======================================================= -->
 				<li class="menu-dropdown {% block aktif_distribution %} {% endblock %}" >
-					<a href="javascript:void(0)">
-						<i class="menu-icon ti-check-box"></i>
-						<span>Distribusi</span>
+				<a href="javascript:void(0)">
+					<i class="menu-icon ti-check-box"></i>
+					<span>Distribusi</span>
+					<span class="fa arrow"></span>
+				</a>
+				<ul class="sub-menu">
+					<li {% block aktif_newDistribution %} {% endblock %}>
+					<a href="{% url 'manager:viewDistribusi' %}">
+						<i class="fa fa-fw ti-receipt"></i> Distribusi Baru
 						<span class="fa arrow"></span>
 					</a>
-					<ul class="sub-menu">
-						<li {% block aktif_newDistribution %} {% endblock %}>
-						<a href="{% url 'manager:viewDistribusi' %}">
-							<i class="fa fa-fw ti-receipt"></i> Distribusi Baru
-							<span class="fa arrow"></span>
-						</a>
-					</li>
-					<li {% block aktif_unfinish %} {% endblock %}>
+				</li>
+				<li {% block aktif_unfinish %} {% endblock %}>
 				<a href="{% url 'manager:viewUnfinished' %}">
 					<i class="fa fa-fw ti-receipt"></i> Belum Selesai (+Kurir)
 					<span class="fa arrow"></span>
 				</a>
 			</li>
 			<li {% block aktif_onprocess %} {% endblock %}>
-				<a href="{% url 'manager:viewOnprocess' %}">
-					<i class="fa fa-fw ti-receipt"></i> Dalam Proses
-					<span class="fa arrow"></span>
-				</a>
-			</li>
-					<li {% block aktif_finish %} {% endblock %}>
-					<a href="{% url 'manager:viewFinished' %}">
-						<i class="fa fa-fw ti-receipt"></i> Selesai
-						<span class="fa arrow"></span>
-					</a>
-				</li>
-				
-		</ul>
-	</li>
-	<!-- ======================================================= -->
-	<li {% block aktif_beras %} {% endblock %}>
-	<a href="{% url 'manager:viewBeras' %}">
-		<i class="menu-icon ti-layout-list-large-image"></i>
-		<span class="mm-text ">Data Beras</span>
-	</a>
-</li>
-<!-- ======================================================= -->
-<li class="menu-dropdown">
-	<a href="javascript:void(0)">
-		<i class="menu-icon ti-check-box"></i>
-		<span>Settings</span>
-		<span class="fa arrow"></span>
-	</a>
-	<ul class="sub-menu">
-		<li {% block aktif_portal %} {% endblock %}>
-		<a href="{% url 'manager:viewPortal' %}">
-			<i class="fa fa-fw ti-receipt"></i> Portal Sign Up
+			<a href="{% url 'manager:viewOnprocess' %}">
+				<i class="fa fa-fw ti-receipt"></i> Dalam Proses
+				<span class="fa arrow"></span>
+			</a>
+		</li>
+		<li {% block aktif_finish %} {% endblock %}>
+		<a href="{% url 'manager:viewFinished' %}">
+			<i class="fa fa-fw ti-receipt"></i> Selesai
 			<span class="fa arrow"></span>
 		</a>
 	</li>
-	<li {% block aktif_jadwal %} {% endblock %}>
-	<a href="#">
-		<i class="fa fa-fw ti-receipt"></i> jadwal distribusi
-		<span class="fa arrow"></span>
-	</a>
+	
+</ul>
+</li>
+<!-- ======================================================= -->
+<li {% block aktif_beras %} {% endblock %}>
+<a href="{% url 'manager:viewBeras' %}">
+<i class="menu-icon ti-layout-list-large-image"></i>
+<span class="mm-text ">Data Beras</span>
+</a>
+</li>
+<!-- ======================================================= -->
+<li class="menu-dropdown">
+<a href="javascript:void(0)">
+<i class="menu-icon ti-check-box"></i>
+<span>Settings</span>
+<span class="fa arrow"></span>
+</a>
+<ul class="sub-menu">
+<li {% block aktif_portal %} {% endblock %}>
+<a href="{% url 'manager:viewPortal' %}">
+	<i class="fa fa-fw ti-receipt"></i> Portal Sign Up
+	<span class="fa arrow"></span>
+</a>
 </li>
 </ul>
 </li>
@@ -288,7 +298,88 @@
 </a>
 </li>
 <!-- ======================================================= -->
+<!-- ====== MENU ADMIN ===== -->
+<!-- ======================================================= -->
+{% elif user.is_authenticated and user.is_superuser %}
+<li {% block aktif_dashboard_adm %} {% endblock %}>
+<a href="{% url 'adm:dashboard_adm' %}">
+<i class="menu-icon ti-desktop"></i>
+<span class="mm-text ">Dashboard</span>
+</a>
+</li>
+<!-- ======================================================= -->
+<li class="menu-dropdown {% block aktif_distribution_adm %} {% endblock %}" >
+<a href="javascript:void(0)">
+<i class="menu-icon ti-check-box"></i>
+<span>Distribusi</span>
+<span class="fa arrow"></span>
+</a>
+<ul class="sub-menu">
+<li {% block aktif_newDistribution_adm %} {% endblock %}>
+<a href="{% url 'adm:viewDistribusi' %}">
+<i class="fa fa-fw ti-receipt"></i> Distribusi Baru
+<span class="fa arrow"></span>
+</a>
+</li>
+<li {% block aktif_unfinish_adm %} {% endblock %}>
+<a href="{% url 'adm:viewUnfinished' %}">
+<i class="fa fa-fw ti-receipt"></i> Belum Selesai (+Kurir)
+<span class="fa arrow"></span>
+</a>
+</li>
+<li {% block aktif_onprocess_adm %} {% endblock %}>
+<a href="{% url 'adm:viewOnprocess' %}">
+<i class="fa fa-fw ti-receipt"></i> Dalam Proses
+<span class="fa arrow"></span>
+</a>
+</li>
+<li {% block aktif_finish_adm %} {% endblock %}>
+<a href="{% url 'adm:viewFinished' %}">
+<i class="fa fa-fw ti-receipt"></i> Selesai
+<span class="fa arrow"></span>
+</a>
+</li>
+</ul>
+</li>
+<!-- ======================================================= -->
+<li {% block aktif_beras_adm %} {% endblock %}>
+<a href="{% url 'adm:viewBeras' %}">
+<i class="menu-icon ti-layout-list-large-image"></i>
+<span class="mm-text ">Data Beras</span>
+</a>
+</li>
+<!-- ======================================================= -->
+<li class="menu-dropdown">
+<a href="javascript:void(0)">
+<i class="menu-icon ti-check-box"></i>
+<span>Settings</span>
+<span class="fa arrow"></span>
+</a>
+<ul class="sub-menu">
+<li {% block aktif_portal_adm %} {% endblock %}>
+<a href="{% url 'adm:viewPortal' %}">
+<i class="fa fa-fw ti-receipt"></i> Portal Sign Up
+<span class="fa arrow"></span>
+</a>
+</li>
+</ul>
+</li>
+<!-- ======================================================= -->
+<li {% block aktif_kurir_adm %} {% endblock %}>
+<a href="{% url 'adm:viewKurir' %}">
+<i class="menu-icon ti-desktop"></i>
+<span class="mm-text ">Data Kurir</span>
+</a>
+</li>
+<li {% block aktif_manager_adm %} {% endblock %}>
+<a href="{% url 'adm:viewManager' %}">
+<i class="menu-icon ti-desktop"></i>
+<span class="mm-text ">Data Manager</span>
+</a>
+</li>
+<!-- ======================================================= -->
 {% endif %}
+<!-- ====== END MENU ADMIN ===== -->
 </ul>
 <!-- / .navigation -->
 </div>
@@ -337,36 +428,36 @@ Contacts
 </h5>
 <ul class="list-unstyled margin-none">
 <li class="rightsidebar-contact-wrapper">
-	<a class="rightsidebar-contact" href="javascript:void(0)">
-		<img src="{% static 'img/authors/avatar6.jpg' %}"
-		class="img-circle pull-right" alt="avatar-image">
-		<i class="fa fa-circle text-xs text-primary"></i>
-		Dewok Satria
-	</a>
+<a class="rightsidebar-contact" href="javascript:void(0)">
+<img src="{% static 'img/authors/avatar6.jpg' %}"
+class="img-circle pull-right" alt="avatar-image">
+<i class="fa fa-circle text-xs text-primary"></i>
+Dewok Satria
+</a>
 </li>
 <li class="rightsidebar-contact-wrapper">
-	<a class="rightsidebar-contact" href="javascript:void(0)">
-		<img src="{% static 'img/authors/avatar.jpg' %}"
-		class="img-circle pull-right" alt="avatar-image">
-		<i class="fa fa-circle text-xs text-primary"></i>
-		Budi Artawan
-	</a>
+<a class="rightsidebar-contact" href="javascript:void(0)">
+<img src="{% static 'img/authors/avatar.jpg' %}"
+class="img-circle pull-right" alt="avatar-image">
+<i class="fa fa-circle text-xs text-primary"></i>
+Budi Artawan
+</a>
 </li>
 <li class="rightsidebar-contact-wrapper">
-	<a class="rightsidebar-contact" href="javascript:void(0)">
-		<img src="{% static 'img/authors/avatar2.jpg' %}"
-		class="img-circle pull-right" alt="avatar-image">
-		<i class="fa fa-circle text-xs text-primary"></i>
-		Angga Juliasta
-	</a>
+<a class="rightsidebar-contact" href="javascript:void(0)">
+<img src="{% static 'img/authors/avatar2.jpg' %}"
+class="img-circle pull-right" alt="avatar-image">
+<i class="fa fa-circle text-xs text-primary"></i>
+Angga Juliasta
+</a>
 </li>
 <li class="rightsidebar-contact-wrapper">
-	<a class="rightsidebar-contact" href="javascript:void(0)">
-		<img src="{% static 'img/authors/avatar3.jpg' %}"
-		class="img-circle pull-right" alt="avatar-image">
-		<i class="fa fa-circle text-xs text-warning"></i>
-		Yusril
-	</a>
+<a class="rightsidebar-contact" href="javascript:void(0)">
+<img src="{% static 'img/authors/avatar3.jpg' %}"
+class="img-circle pull-right" alt="avatar-image">
+<i class="fa fa-circle text-xs text-warning"></i>
+Yusril
+</a>
 </li>
 </ul>
 <h5 class="rightsidebar-right-heading text-uppercase text-xs">
@@ -375,18 +466,18 @@ Recent Updates
 </h5>
 <div>
 <ul class="list-unstyled">
-	<li class="rightsidebar-notification">
-		<a href="javascript:void(0)">
-			<i class="fa ti-comments-smiley fa-fw text-primary"></i>
-			New Comment
-		</a>
-	</li>
-	<li class="rightsidebar-notification">
-		<a href="javascript:void(0)">
-			<i class="fa ti-twitter-alt fa-fw text-success"></i>
-			3 New Followers
-		</a>
-	</li>
+<li class="rightsidebar-notification">
+<a href="javascript:void(0)">
+<i class="fa ti-comments-smiley fa-fw text-primary"></i>
+New Comment
+</a>
+</li>
+<li class="rightsidebar-notification">
+<a href="javascript:void(0)">
+<i class="fa ti-twitter-alt fa-fw text-success"></i>
+3 New Followers
+</a>
+</li>
 </ul>
 </div>
 </div>
@@ -399,30 +490,30 @@ Notifications
 </h5>
 <ul class="list-unstyled m-t-15 notifications">
 <li>
-	<a href="" class="message icon-not striped-col">
-		<img class="message-image img-circle"
-		src="{% static 'img/authors/avatar3.jpg' %}" alt="avatar-image">
-		<div class="message-body">
-			<strong>Budi Artawan</strong>
-			<br>
-			5 members joined today
-			<br>
-			<small class="noti-date">Just now</small>
-		</div>
-	</a>
+<a href="" class="message icon-not striped-col">
+<img class="message-image img-circle"
+src="{% static 'img/authors/avatar3.jpg' %}" alt="avatar-image">
+<div class="message-body">
+<strong>Budi Artawan</strong>
+<br>
+5 members joined today
+<br>
+<small class="noti-date">Just now</small>
+</div>
+</a>
 </li>
 <li>
-	<a href="" class="message icon-not">
-		<img class="message-image img-circle"
-		src="{% static 'img/authors/avatar.jpg' %}" alt="avatar-image">
-		<div class="message-body">
-			<strong>Angga Juliasta</strong>
-			<br>
-			likes a photo of you
-			<br>
-			<small class="noti-date">5 min</small>
-		</div>
-	</a>
+<a href="" class="message icon-not">
+<img class="message-image img-circle"
+src="{% static 'img/authors/avatar.jpg' %}" alt="avatar-image">
+<div class="message-body">
+<strong>Angga Juliasta</strong>
+<br>
+likes a photo of you
+<br>
+<small class="noti-date">5 min</small>
+</div>
+</a>
 </li>
 <li class="text-right noti-footer"><a href="javascript:void(0)">View All Notifications <i
 class="ti-arrow-right"></i></a></li>
@@ -433,66 +524,66 @@ Tasks
 </h5>
 <ul class="list-unstyled m-t-15">
 <li>
-	<div>
-		<p>
-			<span>Button Design</span>
-			<small class="pull-right text-muted">40%</small>
-		</p>
-		<div class="progress progress-xs progress-striped active">
-			<div class="progress-bar progress-bar-success"
-				role="progressbar"
-				aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"
-				style="width: 40%">
-				<span class="sr-only">40% Complete (success)</span>
-			</div>
-		</div>
-	</div>
+<div>
+<p>
+<span>Button Design</span>
+<small class="pull-right text-muted">40%</small>
+</p>
+<div class="progress progress-xs progress-striped active">
+<div class="progress-bar progress-bar-success"
+role="progressbar"
+aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"
+style="width: 40%">
+<span class="sr-only">40% Complete (success)</span>
+</div>
+</div>
+</div>
 </li>
 <li>
-	<div>
-		<p>
-			<span>Theme Creation</span>
-			<small class="pull-right text-muted">20%</small>
-		</p>
-		<div class="progress progress-xs progress-striped active">
-			<div class="progress-bar progress-bar-info" role="progressbar"
-				aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"
-				style="width: 20%">
-				<span class="sr-only">20% Complete</span>
-			</div>
-		</div>
-	</div>
+<div>
+<p>
+<span>Theme Creation</span>
+<small class="pull-right text-muted">20%</small>
+</p>
+<div class="progress progress-xs progress-striped active">
+<div class="progress-bar progress-bar-info" role="progressbar"
+aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"
+style="width: 20%">
+<span class="sr-only">20% Complete</span>
+</div>
+</div>
+</div>
 </li>
 <li>
-	<div>
-		<p>
-			<span>XYZ Task To Do</span>
-			<small class="pull-right text-muted">60%</small>
-		</p>
-		<div class="progress progress-xs progress-striped active">
-			<div class="progress-bar progress-bar-warning"
-				role="progressbar"
-				aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
-				style="width: 60%">
-				<span class="sr-only">60% Complete (warning)</span>
-			</div>
-		</div>
-	</div>
+<div>
+<p>
+<span>XYZ Task To Do</span>
+<small class="pull-right text-muted">60%</small>
+</p>
+<div class="progress progress-xs progress-striped active">
+<div class="progress-bar progress-bar-warning"
+role="progressbar"
+aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+style="width: 60%">
+<span class="sr-only">60% Complete (warning)</span>
+</div>
+</div>
+</div>
 </li>
 <li>
-	<div>
-		<p>
-			<span>Transitions Creation</span>
-			<small class="pull-right text-muted">80%</small>
-		</p>
-		<div class="progress progress-xs progress-striped active">
-			<div class="progress-bar progress-bar-danger" role="progressbar"
-				aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"
-				style="width: 80%">
-				<span class="sr-only">80% Complete (danger)</span>
-			</div>
-		</div>
-	</div>
+<div>
+<p>
+<span>Transitions Creation</span>
+<small class="pull-right text-muted">80%</small>
+</p>
+<div class="progress progress-xs progress-striped active">
+<div class="progress-bar progress-bar-danger" role="progressbar"
+aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"
+style="width: 80%">
+<span class="sr-only">80% Complete (danger)</span>
+</div>
+</div>
+</div>
 </li>
 <li class="text-right"><a href="javascript:void(0)">View All Tasks <i
 class="ti-arrow-right"></i></a>
@@ -510,19 +601,19 @@ General
 <li>
 <label for="status">Available</label>
 <span class="pull-right">
-	<input type="checkbox" id="status" name="my-checkbox" checked>
+<input type="checkbox" id="status" name="my-checkbox" checked>
 </span>
 </li>
 <li>
 <label for="email-auth">Login with Email</label>
 <span class="pull-right">
-	<input type="checkbox" id="email-auth" name="my-checkbox">
+<input type="checkbox" id="email-auth" name="my-checkbox">
 </span>
 </li>
 <li>
 <label for="update">Auto Update</label>
 <span class="pull-right">
-	<input type="checkbox" id="update" name="my-checkbox">
+<input type="checkbox" id="update" name="my-checkbox">
 </span>
 </li>
 </ul>
@@ -534,19 +625,19 @@ Sound & Notification
 <li>
 <label for="chat-sound">Chat Sound</label>
 <span class="pull-right">
-	<input type="checkbox" id="chat-sound" name="my-checkbox" checked>
+<input type="checkbox" id="chat-sound" name="my-checkbox" checked>
 </span>
 </li>
 <li>
 <label for="noti-sound">Notification Sound</label>
 <span class="pull-right">
-	<input type="checkbox" id="noti-sound" name="my-checkbox">
+<input type="checkbox" id="noti-sound" name="my-checkbox">
 </span>
 </li>
 <li>
 <label for="remain">Remainder </label>
 <span class="pull-right">
-	<input type="checkbox" id="remain" name="my-checkbox" checked>
+<input type="checkbox" id="remain" name="my-checkbox" checked>
 </span>
 </li>
 <li>

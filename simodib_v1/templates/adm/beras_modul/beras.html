@@ -1,0 +1,425 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block aktif_beras_adm %}
+	class="active"
+{% endblock %}
+{% block content-header %}
+	<h1>DATA BERAS</h1>
+	<ol class="breadcrumb">
+		<li>
+			<a href="{% url 'home' %}">
+				<i class="fa fa-fw ti-home"></i> Dashboard
+			</a>
+		</li>
+		<li class="active">
+			Data Beras
+		</li>
+	</ol>
+{% endblock %}
+{% block content %}
+	{% if message %}
+		<script>
+		$(document).ready(function() {
+		new PNotify({
+		type: 'success',
+		title: 'Message',
+		text: '{{message}}',
+		});
+		});
+		</script>
+	{% endif %}
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel filterable">
+				<div class="panel-heading clearfix  ">
+					<div class="panel-title pull-left">
+						<i class="ti-export"></i> <b>DATA BERAS</b>
+					</div>
+					<div class="tools pull-right">
+						<button type="button" class="btn btn-success hvr-wobble-horizontal" data-toggle="modal" data-target="#add_form_modal">Tambah</button>
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="table-responsive">
+						<table class="table table-striped table-bordered" id="tabel_beras">
+							<thead>
+								<tr>
+									<th>No</th>
+									<th>Nama/Varietas </th>
+									<th>STOK</th>
+									<th>Harga / Kwintal</th>
+									<th>Aksi</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for beras in dataBeras %}
+									<tr>
+										<td>{{ forloop.counter }}</td>
+										<td>{{ beras.name }}</td>
+										<td class="align-middle">{{ beras.stock }}</td>
+										<td class="align-middle">{{ beras.price }}</td>
+										<td>
+											<button type="button" class="btn btn-danger hvr-wobble-horizontal" data-toggle="modal" data-target="#delete_modal" data-beras="{{beras.name}}_{{beras.pk}}">Delete</button>
+
+											<button type="button" class="btn btn-info hvr-wobble-horizontal" data-toggle="modal" data-target="#tambah_stock_modal" data-beras="{{beras.name}}_{{beras.stock}}_{{beras.price}}_{{beras.pk}}">Tambah Persedian</button>
+										</td>
+									</tr>
+									{% empty %}
+									<tr>
+										<td class="bg-light text-center font-italic" colspan="4">No Rice Data List for your right now.</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+					
+					<div class="modal fade" id="delete_modal" tabindex="-1" role="dialog" aria-labelledby="delete_modalLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">×</button>
+									<h4 class="modal-title" id="delete_modalLabel">Delete Data</h4>
+									
+								</div>
+								<div class="modal-body">
+									<h4>delete text</h4>
+								</div>
+								<div class="modal-footer">
+									<form id="delete_modal">
+										<input type="hidden" class="form-control" id="beras-name" name="id_beras">
+										<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+										<button type="submit" class="btn btn-danger">Hapus</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="add_form_modal" class="modal fade animated" role="dialog">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h4 class="modal-title">Tambah Data Beras</h4>
+								</div>
+								<form id="tambah_beras" role="form" >
+									<!-- method="POST" action="{% url 'adm:viewBeras' %}" -->
+									{% csrf_token %}
+									<div class="modal-body">
+										<div class="row m-t-10">
+											<div class="col-md-6">
+												<div class="input-group">
+													<label class="sr-only" for="name">Nama/Varietas</label>
+													<input type="text" id="name"
+													placeholder="Nama/Varietas" class="form-control m-t-10">
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="input-group">
+													<label class="sr-only" for="stock">Jumlah/Stok/Kwintal</label>
+													<input type="text" id="stock"
+													placeholder="Jumlah/Stok/Kwintal" class="form-control m-t-10">
+												</div>
+											</div>
+										</div>
+										<div class="row m-t-10">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label class="sr-only" for="price">Harga / Kwintal</label>
+													<input type="text" id="price"
+													placeholder="Harga / Kwintal" class="form-control m-t-10">
+												</div>
+											</div>
+										</div>
+									</div>
+									
+									<div class="modal-footer">
+										<button type="submit" class="btn btn-succes">Submit</button>
+										<button type="reset" class="btn btn-default">Reset</button>
+										<button type="button" class="btn btn-default" data-dismiss="modal" id="close_add">
+										Close
+										</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="modal fade" id="tambah_stock_modal" role="dialog">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h4 class="modal-title">Tambah Stock Beras</h4>
+								</div>
+								<form id="tambah_stock_form" role="form" >
+									<!-- method="POST" action="{% url 'adm:viewBeras' %}" -->
+									{% csrf_token %}
+									<div class="modal-body">
+										<input type="hidden" name="id_beras" id="id-beras">
+										<div class="row m-t-10">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="nama-beras" class="col-sm-2 control-label">Nama Beras</label>
+													<div class="col-sm-10">
+														<input type="text" class="form-control" id="nama-beras" disabled="">
+													</div>
+												</div>
+											</div>
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="harga-beras" class="col-sm-2 control-label">Harga / Kwintal</label>
+													<div class="col-sm-10">
+														<input type="text" class="form-control" id="harga-beras" disabled="">
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row m-t-10">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="stock-beras" class="col-sm-2 control-label">Persedian</label>
+													<div class="col-sm-4">
+														<input type="text" class="form-control" id="stock-beras" disabled="">
+													</div>
+													<div class="col-sm-2">
+														<center><b><h5>+</h5></b></center>
+													</div>
+													<div class="col-sm-4">
+														<input type="text" class="form-control" id="tambahan_stock" placeholder="Tambah persedian">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									
+									<div class="modal-footer">
+										<button type="submit" class="btn btn-succes">Tambah</button>
+										<button type="button" class="btn btn-danger" data-dismiss="modal">
+										Tutup
+										</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(document).on('submit','#tambah_beras',function(e){
+			e.preventDefault();
+			$.ajax({
+				type:'POST',
+				url:"{% url 'adm:viewBeras' %}",
+				data:{
+					name:$('#name').val(),
+					stock:$('#stock').val(),
+					price:$('#price').val(),
+					csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+				},
+				success:function(){
+					// alert("Sukses Menambah Beras");
+					$('#tambah_beras').modal('hide');
+				}
+			})
+		});
+		$(document).on('submit','#tambah_beras',function(event) {
+		event.preventDefault();
+		$.ajax({
+					type:'GET',
+					url:"{% url 'adm:getBeras' %}",
+					dataType:  'json',
+					success: function  (data) {
+						// console.log(data.beras);
+					let rows =  '';
+					var noUrut = 1;
+					var lastData = data.beras.length;
+					data.beras.forEach(rice => {
+						if (noUrut == lastData){
+							rows += `
+							<tr>
+											<td>${noUrut}</td>
+											<td>${rice.name}</td>
+											<td>${rice.stock}</td>
+											<td>${rice.price}</td>
+											<td>
+														<button type="button" class="btn btn-danger hvr-wobble-horizontal" data-toggle="modal" data-target="#delete_modal" data-beras="${rice.name}_${rice.id}">Delete</button>
+														<button type="button" class="btn btn-info hvr-wobble-horizontal" data-toggle="modal" data-target="#tambah_stock_modal" data-beras="${rice.name}_${rice.stock}_${rice.price}_${rice.id}">Tambah Persedian</button>
+											</td>
+							</tr>`;
+						}
+						noUrut = noUrut + 1;
+					});
+					$('#tabel_beras > tbody').append(rows);
+					$("#tambah_beras")[0].reset();
+				}
+			});
+		});
+		$(document).on('submit','#delete_modal',function(ev){
+			ev.preventDefault();
+			$.ajax({
+				type:'GET',
+				url:"{% url 'adm:deleteBeras' %}",
+				data:{
+					id_beras:$('#beras-name').val(),
+					// csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+				},
+				dataType:  'json',
+				success:function(data){
+					let rows =  '';
+					var noUrut = 1;
+					var lastData = data.beras.length;
+					data.beras.forEach(rice => {
+						rows += `
+							<tr>
+										<td>${noUrut}</td>
+										<td>${rice.name}</td>
+										<td>${rice.stock}</td>
+										<td>${rice.price}</td>
+										<td>
+													<button type="button" class="btn btn-danger hvr-wobble-horizontal" data-toggle="modal" data-target="#delete_modal" data-beras="${rice.name}_${rice.id}">Delete</button>
+													<button type="button" class="btn btn-info hvr-wobble-horizontal" data-toggle="modal" data-target="#tambah_stock_modal" data-beras="${rice.name}_${rice.stock}_${rice.price}_${rice.id}">Tambah Persedian</button>
+										</td>
+							</tr>`;
+						noUrut = noUrut + 1;
+					});
+					$('#tabel_beras > tbody').html(rows);
+					$('#delete_modal').modal('hide');
+				}
+			})
+		});
+
+		$(document).on('submit','#tambah_stock_form',function(e){
+			e.preventDefault();
+			$.ajax({
+				type:'POST',
+				url:"{% url 'adm:tambahStockBeras' %}",
+				data:{
+					id:$('#id-beras').val(),
+					tambahan_stock:$('#tambahan_stock').val(),
+					csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+				},
+				dataType:  'json',
+				success:function(data){
+					let rows =  '';
+					var noUrut = 1;
+					var lastData = data.beras.length;
+					data.beras.forEach(rice => {
+						rows += `
+							<tr>
+										<td>${noUrut}</td>
+										<td>${rice.name}</td>
+										<td>${rice.stock}</td>
+										<td>${rice.price}</td>
+										<td>
+													<button type="button" class="btn btn-danger hvr-wobble-horizontal" data-toggle="modal" data-target="#delete_modal" data-beras="${rice.name}_${rice.id}">Delete</button>
+													<button type="button" class="btn btn-info hvr-wobble-horizontal" data-toggle="modal" data-target="#tambah_stock_modal" data-beras="${rice.name}_${rice.stock}_${rice.price}_${rice.id}">Tambah Persedian</button>
+										</td>
+							</tr>`;
+						noUrut = noUrut + 1;
+					});
+					$('#tabel_beras > tbody').html(rows);
+					$("#tambah_stock_modal")[0].reset();
+					$('#tambah_stock_form').modal('hide');
+				}
+			})
+		});
+		
+	</script>
+{% endblock %}
+{% block extraCss %}
+	<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+	<script src="{% static 'js/jquery-3.4.1.min.js'%}"></script>
+	<!-- Data Tables -->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/dataTables.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/buttons.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/colReorder.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/dataTables.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/rowReorder.bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/buttons.bootstrap.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/scroller.bootstrap.css' %}">
+	<!-- End Data Tables -->
+	<!-- Button -->
+	<link href="{% static 'vendors/hover/css/hover-min.css' %}" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'vendors/laddabootstrap/css/ladda-themeless.min.css' %}">
+	<link href="{% static 'css/buttons_sass.css' %}" rel="stylesheet">
+	<link href="{% static 'css/advbuttons.css' %}" rel="stylesheet">
+	<!-- End Button -->
+	<!-- Modal -->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendors/animate/animate.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/custom_css/advanced_modals.css' %}">
+	<!-- End Modal -->
+	<!-- PNotify -->
+	<link rel="stylesheet" href="{% static 'vendors/animate/animate.min.css' %}"/>
+	<link rel="stylesheet" href="{% static 'vendors/pnotify/css/pnotify.css' %}">
+	<link href="{% static 'vendors/pnotify/css/pnotify.brighttheme.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'vendors/pnotify/css/pnotify.buttons.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'vendors/pnotify/css/pnotify.mobile.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'vendors/pnotify/css/pnotify.history.css' %}" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/custom_css/toastr_notificatons.css' %}">
+	<!-- End PNotify -->
+{% endblock %}
+{% block extraJs %}
+	<!-- dataTables -->
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/jquery.dataTables.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.bootstrap.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.buttons.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.colReorder.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.responsive.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.rowReorder.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.colVis.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.html5.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.bootstrap.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.print.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.scroller.js' %}"></script>
+	<script src="{% static 'js/custom_js/advanced_datatables.js' %}" type="text/javascript"></script>
+	<!-- End dataTables -->
+	<!-- Button -->
+	<script type="text/javascript" src="{% static 'vendors/Buttons/js/buttons.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/spin.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/ladda.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/custom_js/button_main.js' %}"></script>
+	<!-- End Button -->
+	<!-- Modal -->
+	<script type="text/javascript" src="{% static 'js/custom_js/advanced_modals.js' %}"></script>
+	<script type="text/javascript">
+		$('#delete_modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget)
+		var dataRice = button.data('beras')
+		var arrBeras = dataRice.split("_");
+		var namaBeras = arrBeras[0];
+		var idBeras = arrBeras[1];
+		var modal = $(this)
+		modal.find('.modal-title').text('Delete Beras ' + namaBeras)
+		modal.find('.modal-body h4').text('Yakin Ingin Menghapus ' + namaBeras + '?')
+		modal.find('.modal-footer input').val(idBeras)
+		})
+		$('#tambah_stock_modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget)
+		var dataRice = button.data('beras')
+		var arrBeras = dataRice.split("_");
+		var nama = arrBeras[0];
+		var stock = arrBeras[1];
+		var price = arrBeras[2];
+		var id = arrBeras[3];
+		var modal = $(this)
+		modal.find('.modal-body #nama-beras').val(nama)
+		modal.find('.modal-body #stock-beras').val(stock)
+		modal.find('.modal-body #harga-beras').val(price)
+		modal.find('.modal-body #id-beras').val(id)
+		})
+	</script>
+	<!-- End Modal -->
+	<!-- PNotify -->
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.animate.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.buttons.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.confirm.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.nonblock.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.mobile.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.desktop.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.history.js' %}"></script>
+	<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.callbacks.js' %}"></script>
+	<script src="{% static 'js/custom_js/notifications.js' %}"></script>
+	<!-- End Notify -->
+{% endblock %}

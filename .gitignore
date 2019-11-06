@@ -3,4 +3,6 @@
 __pycache__
 myvenv
 myvirtualenvironment
+.idea
+simodib.sql
 .DS_Store

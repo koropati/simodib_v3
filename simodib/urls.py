@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from simodib_v1.views import company, kurir, manager, home
+from simodib_v1.views import company, kurir, manager, home, adm
 # path('accounts/signup/kurir/', kurir.KurirSignUpView.as_view(), name='kurir_signup'),
 urlpatterns = [
     path('admin/', admin.site.urls),

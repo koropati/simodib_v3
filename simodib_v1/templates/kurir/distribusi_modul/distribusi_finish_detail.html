@@ -1,0 +1,350 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block aktif_distribusi_kurir %}
+	active
+{% endblock %}
+{% block distribusi_selesai %}
+	class="active"
+{% endblock %}
+{% block content-header %}
+	<h1>DETAIL DISTRIBUSI</h1>
+	<ol class="breadcrumb">
+		<li>
+			<a href="{% url 'home' %}">
+				<i class="fa fa-fw ti-home"></i> Dashboard
+			</a>
+		</li>
+		<li>
+			Distribusi
+		</li>
+		<li>
+			Belum Diproses
+		</li>
+		<li class="active">
+			Detail
+		</li>
+	</ol>
+{% endblock %}
+{% block content %}
+	{% if message %}
+		<script>
+		$(document).ready(function() {
+		new PNotify({
+		type: '{{typeMsg}}',
+		title: 'Message',
+		text: '{{message}}',
+		});
+		$("#data_kurir").select2({
+				theme: "bootstrap",
+				width: "100%",
+			});
+		});
+		</script>
+	{% endif %}
+	<div class="row" id="complex-form">
+		<!--5th tab bank application starting-->
+		<div class="col-lg-12">
+			<form class="grid-form">
+				<h2 style="text-align:center">DETAIL ORDER</h2>
+				<fieldset>
+					<legend>NAMA/KODE DISTRIBUSI </legend>
+					<div data-row-span="1">
+						<div data-field-span="1" class="" style="height: 64px;">
+							<label>Kode Distribusi Beras</label>
+							<input type="text" value="{{takenDistribusi.distribution.name}}" disabled="">
+						</div>
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>Personal Details</legend>
+					<div data-row-span="4">
+						<div data-field-span="1" style="height: 66px;">
+							<label>Title</label>
+							<label>
+								<div class="iradio_square-blue" style="position: relative;"><input type="radio" name="customer-title[]" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> Mr.</label> &nbsp;
+								<label>
+									<div class="iradio_square-blue" style="position: relative;"><input type="radio" name="customer-title[]" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> Mrs.</label> &nbsp;
+									<label>
+										<div class="iradio_square-blue" style="position: relative;"><input type="radio" name="customer-title[]" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> Ms.</label>
+									</div>
+									<div data-field-span="3" style="height: 66px;">
+										<label>Full Name</label>
+										<input type="text" value="{{takenDistribusi.distribution.ordered_by}}" disabled="">
+									</div>
+								</div>
+								<div data-row-span="4">
+									<div data-field-span="2" data-field-error="Please enter a valid email address" style="height: 82px;">
+										<label>E-mail</label>
+										<input type="text" value="{{takenDistribusi.distribution.email}}" disabled="">
+									</div>
+									<div data-field-span="1" style="height: 82px;">
+										<label>Mobile No.</label>
+										<input type="text" value="{{takenDistribusi.distribution.telepon}}" disabled="">
+									</div>
+								</div>
+								<div data-row-span="2">
+									<div data-field-span="1" style="height: 82px;">
+										<label>ADDRESS
+										</label>
+										<input type="text" value="{{takenDistribusi.distribution.address}}" disabled="">
+									</div>
+									<div data-field-span="1" style="height: 82px;">
+										<label>CATATAN KHUSUS:</label>
+										<input type="text" value="{{takenDistribusi.distribution.catatan_khusus}}">
+									</div>
+								</div>
+								<br>
+							</fieldset>
+							<br>
+							<br>
+							<fieldset>
+								<legend>DATA PESANAN</legend>
+								<div data-row-span="1">
+									<div data-field-span="1" style="height: 100%;" class="">
+										<label>Berikut adalah data pesanan pelanggan:</label>
+										<div class="table-responsive">
+											<table class="table table-striped table-bordered" id="pesanan">
+												<thead>
+													<tr>
+														<th>No</th>
+														<th>Nama/Jenis Beras</th>
+														<th>Harga/Kwintal</th>
+														<th>Jumlah Pesanan/Kwintal</th>
+														<th>Sub Total</th>
+														
+													</tr>
+												</thead>
+												<tbody>
+													{% for distribusi in detailOrder %}
+														<tr>
+															<td>{{ forloop.counter }}</td>
+															<td>{{ distribusi.rice.name }}</td>
+															<td>Rp. {{ distribusi.rice.price }}</td>
+															<td class="align-middle">{{ distribusi.value }}</td>
+															<td class="align-middle">Rp. {{ distribusi.prices }}</td>
+														</tr>
+														{% empty %}
+														<tr>
+															<td class="bg-light text-center font-italic" colspan="4">No Rice Data List for your right now.</td>
+														</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							<br>
+							<br>
+							<fieldset>
+								<div class="col-md-4">
+									
+								</div>
+								<div class="col-md-4">
+									<div data-field-span="1" style="height: 66px;">
+										<label>Penerima</label>
+										<br>
+										<br>
+										<br>
+										<br>
+										<input type="text" value="{{takenDistribusi.distribution.ordered_by}}" disabled="">
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div data-field-span="1" style="height: 66px;">
+										<label>Kurir Pengantar</label>
+										<br>
+										<br>
+										<br>
+										<br>
+										<input type="text" value="{{takenDistribusi.kurir.user.first_name}} {{takenDistribusi.kurir.user.last_name}}" disabled="">
+									</div>
+								</div>
+								<br>
+								<br>
+							</fieldset>
+							<br>
+							<fieldset>
+								<legend>Aksi</legend>
+								<div data-row-span="1">
+									<div data-field-span="1" style="height: 68px;">
+										<input type=button value="KEMBALI" class="button button-pill button-caution-flat hvr-pulse-shrink" onClick="javascript:history.go(-1);">
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			{% endblock %}
+			{% block extraCss %}
+				<script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+				<!-- Data Tables -->
+				<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/dataTables.bootstrap.css' %}"/>
+				<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/buttons.bootstrap.css' %}"/>
+				<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/colReorder.bootstrap.css' %}"/>
+				<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/dataTables.bootstrap.css' %}"/>
+				<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/rowReorder.bootstrap.css' %}"/>
+				<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/buttons.bootstrap.css' %}">
+				<link rel="stylesheet" type="text/css" href="{% static 'vendors/datatables/css/scroller.bootstrap.css' %}">
+				<!-- End Data Tables -->
+				<!-- Button -->
+				<link href="{% static 'vendors/hover/css/hover-min.css' %}" rel="stylesheet">
+				<link rel="stylesheet" href="{% static 'vendors/laddabootstrap/css/ladda-themeless.min.css' %}">
+				<link href="{% static 'css/buttons_sass.css' %}" rel="stylesheet">
+				<link href="{% static 'css/advbuttons.css' %}" rel="stylesheet">
+				<!-- End Button -->
+				<!-- Modal -->
+				<link rel="stylesheet" type="text/css" href="{% static 'vendors/animate/animate.min.css' %}">
+				<link rel="stylesheet" type="text/css" href="{% static 'css/custom_css/advanced_modals.css' %}">
+				<!-- End Modal -->
+				<!-- PNotify -->
+				<link rel="stylesheet" href="{% static 'vendors/animate/animate.min.css' %}"/>
+				<link rel="stylesheet" href="{% static 'vendors/pnotify/css/pnotify.css' %}">
+				<link href="{% static 'vendors/pnotify/css/pnotify.brighttheme.css' %}" rel="stylesheet" type="text/css"/>
+				<link href="{% static 'vendors/pnotify/css/pnotify.buttons.css' %}" rel="stylesheet" type="text/css"/>
+				<link href="{% static 'vendors/pnotify/css/pnotify.mobile.css' %}" rel="stylesheet" type="text/css"/>
+				<link href="{% static 'vendors/pnotify/css/pnotify.history.css' %}" rel="stylesheet" type="text/css"/>
+				<link rel="stylesheet" type="text/css" href="{% static 'css/custom_css/toastr_notificatons.css' %}">
+				<!-- End PNotify -->
+				<!-- SELECT 2 -->
+				<link rel="stylesheet" type="text/css" href="{% static 'vendors/select2/css/select2.min.css' %}">
+				<link href="{% static 'vendors/select2/css/select2-bootstrap.css' %}" rel="stylesheet" type="text/css">
+				<script type="text/javascript">
+					$(document).ready(function() {
+						$("#data_kurir").select2({
+							theme: "bootstrap",
+							width: "100%",
+						});
+						// OUT MODAL
+						$('#add_kurir_modal').on('hide.bs.modal', function () {
+				$("#add_kurir_modal").removeClass().addClass("modal fade animated rollOut");
+					}).on('hidden.bs.modal', function () {
+					$("#add_kurir_modal").removeClass().addClass("modal fade animated");
+					});
+					$('#batal_modal').on('hide.bs.modal', function () {
+				$("#batal_modal").removeClass().addClass("modal fade animated rollOut");
+					}).on('hidden.bs.modal', function () {
+					$("#batal_modal").removeClass().addClass("modal fade animated");
+					});
+					// END OUT MODAL
+						$("[data-animate-modal-add]").on('click', function () {
+					$("#add_form_modal").addClass($(this).attr("data-animate-modal-add"));
+					});
+						$("[data-animate-modal]").on('click', function () {
+					$("#add_kurir_modal").addClass($(this).attr("data-animate-modal"));
+					});
+					$("[data-animate-modal-delete]").on('click', function () {
+					$("#batal_modal").addClass($(this).attr("data-animate-modal-delete"));
+					});
+					$(".modalcolor").on("click", function () {
+				$("#batal_modal").find('.modal-header').css("background-color", $(this).attr("data-modalcolor"));
+					});
+					});
+				</script>
+				<style type="text/css">
+					span:select2{
+						width: 100%;
+					}
+				</style>
+				<!-- END SELECT 2 -->
+				<!-- Complex Form -->
+				<link rel="stylesheet" type="text/css" href="{% static 'vendors/gridforms/css/gridforms.css' %}">
+				<link rel="stylesheet" type="text/css" href="{% static 'css/complex_forms.css' %}">
+				<!-- END Complex Form -->
+			{% endblock %}
+			{% block extraJs %}
+				<!-- dataTables -->
+				<script type="text/javascript" src="{% static 'vendors/datatables/js/jquery.dataTables.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.bootstrap.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.buttons.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.colReorder.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.responsive.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.rowReorder.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.colVis.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.html5.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.bootstrap.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/datatables/js/buttons.print.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/datatables/js/dataTables.scroller.js' %}"></script>
+				<script src="{% static 'js/custom_js/advanced_datatables.js' %}" type="text/javascript"></script>
+				<!-- End dataTables -->
+				<!-- Button -->
+				<script type="text/javascript" src="{% static 'vendors/Buttons/js/buttons.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/spin.min.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/laddabootstrap/js/ladda.min.js' %}"></script>
+				<script type="text/javascript" src="{% static 'js/custom_js/button_main.js' %}"></script>
+				<!-- End Button -->
+				<!-- Modal -->
+				<script type="text/javascript" src="{% static 'js/custom_js/advanced_modals.js' %}"></script>
+				<script type="text/javascript">
+					
+					$('#batal_modal').on('show.bs.modal', function (event) {
+					var button = $(event.relatedTarget)
+					var dataRice = button.data('distribusi')
+					var arrdistribusi = dataRice.split("_");
+					var namadistribusi = arrdistribusi[0];
+					var iddistribusi = arrdistribusi[1];
+					var modal = $(this)
+					modal.find('.modal-title').text('Batalkan distribusi ' + namadistribusi)
+					modal.find('.modal-body h4').text('Yakin Ingin Membatalkan ' + namadistribusi + '? Setelah menekan batal maka distribusi akan di pindahkan ke list awal, sehingga distribusi ini tidak akan terlihat bagi driver/kurir')
+					modal.find('.modal-footer input').val(iddistribusi)
+					})
+					$('#add_kurir_modal').on('show.bs.modal', function (event) {
+						$("#data_kurir").select2({
+							theme: "bootstrap",
+							width: "100%",
+						});
+					var button_add = $(event.relatedTarget)
+					var dataRiceAdd = button_add.data('add')
+					var arrDistribusi = dataRiceAdd.split("_");
+					var namaDistribusi = arrDistribusi[0];
+					var idDistribusi = arrDistribusi[1];
+					var modal = $(this)
+					modal.find('.modal-title').text('Pilih Driver/Kurir Untuk Order ' + namaDistribusi)
+					modal.find('#nonsingle-rice #id_dist').val(idDistribusi)
+					modal.find('#distribusi_name').val(namaDistribusi)
+					modal.find('#distribusi_id').val(idDistribusi)
+					// modal.find('.modal-footer input').val(iddistribusi)
+					})
+					
+					// adding mutirice
+					var i = 1;
+					// id di button untuk nambahin
+					$('#add-rice').on('click', function () {
+					if (i < 5) {
+						var jenis_barang = "<div class='col-md-5'><div class='form-group'><select id='data_kurir"+i+"' name='name[]'><option>Pilih Jenis Beras</option>{% for beras in dataBeras %}<option value='{{beras.pk}}' title='{{beras.name}}_Rp.{{beras.price}}'>{{beras.name}}</option>{% endfor %}</select></div></div>";
+						var icon_arrow = "<div class='col-md-1'> <div class='trip-type-multi'> <i class='fa ti-arrow-right icon'></i> </div> </div>";
+						var jumlah_barang = "<div class='col-md-5'><div class='form-group'><input type='text' class='form-control' placeholder='Kwintal' name='value[]'></div></div>";
+						var tombol_remove = "<div class='col-md-1'><span class=''><i class='fa fa-fw ti-minus remove-rice'></i></span></div>";
+						//id form , find nama div nya, append di div class row nya
+						$('#nonsingle-rice').find('.modal-body').append('<div id="pesanan0" class="row">' + jenis_barang + icon_arrow + jumlah_barang + tombol_remove + '</div>');
+						$("#data_kurir"+i).select2({
+							theme: "bootstrap",
+							width: "100%",
+						});
+						i += 1;
+					}
+					});
+					$('body').on('click', '.remove-rice', function (e) {
+						e.preventDefault();
+						i--;
+						//nama class nya di rownya itu loh
+						$(this).closest("#pesanan0").remove();
+					});
+				</script>
+				<!-- End Modal -->
+				<!-- PNotify -->
+				<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.animate.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.buttons.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.confirm.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.nonblock.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.mobile.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.desktop.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.history.js' %}"></script>
+				<script type="text/javascript" src="{% static 'vendors/pnotify/js/pnotify.callbacks.js' %}"></script>
+				<script src="{% static 'js/custom_js/notifications.js' %}"></script>
+				<!-- End Notify -->
+				<!-- SELECT 2 -->
+				<script type="text/javascript" src="{% static 'vendors/select2/js/select2.js' %}"></script>
+				<!-- END SELECT 2 -->
+			{% endblock %}

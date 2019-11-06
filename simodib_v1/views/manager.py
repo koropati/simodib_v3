@@ -53,9 +53,13 @@ def portalSignUp(request):
 @manager_required
 def dashboard(request):
     totalKurir = Kurir.objects.all().count()
+    totalDistribution = TakenDistribution.objects.all().count()
+    totalJenisBeras = Rice.objects.all().count()
+    totalDist = Distribution.objects.all().count()
     timeline = DataLogPerjalanan.objects.all()
+    # totalDistribution
     # user = User.object.select_related('user')
-    return render(request,'manager/dashboard.html', {'totalKurir' : totalKurir,'timeline':timeline})
+    return render(request,'manager/dashboard.html', {'totalKurir' : totalKurir,'timeline':timeline, 'totalDistribution':totalDistribution, 'totalJenisBeras': totalJenisBeras,'totalDist':totalDist})
 
 @login_required
 @manager_required

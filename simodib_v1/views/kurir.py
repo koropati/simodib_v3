@@ -9,7 +9,7 @@ from django.http import HttpResponse, JsonResponse
 
 from ..decorators import kurir_required
 from ..forms import KurirSignUpForm
-from ..models import User, TakenDistribution, Distribution, PortalSignUp, DataLogPerjalanan
+from ..models import User, Kurir, Rice, TakenDistribution, Distribution, PortalSignUp, DataLogPerjalanan, DetailOrder
 
 class KurirSignUpView(CreateView):
     model = User
@@ -71,9 +71,18 @@ class DistributionView(ListView):
 @login_required 
 @kurir_required
 def dashboard(request):
-    totalDistribution = Distribution.objects.all().count()
+    user = request.user
+    id_kurir = user.id
+    belumProses = TakenDistribution.objects.filter(Q(kurir=id_kurir) & ~Q(status_track='1'),~Q(status_track='2')).count()
+    sedangProses = TakenDistribution.objects.filter(Q(kurir=id_kurir), Q(status_track='1')).count()
+    selesaiProses = TakenDistribution.objects.filter(Q(kurir=id_kurir),Q(status_track='2')).count()
+
+    totalKurir = Kurir.objects.all().count()
+    totalDistribusi = TakenDistribution.objects.all().count()
+    totalJenisBeras = Rice.objects.all().count()
+    totalDist = Distribution.objects.all().count()
     # user = User.object.select_related('user')
-    return render(request,'kurir/dashboard.html', {'totalDistribution' : totalDistribution,})
+    return render(request,'kurir/dashboard.html', {'totalDist':totalDist, 'totalJenisBeras': totalJenisBeras,'totalDist':totalDist, 'belumProses': belumProses, 'sedangProses': sedangProses, 'selesaiProses':selesaiProses})
 
 #belum selesai status_track 0 /null
 #Sedang diproses status_track 1
@@ -98,8 +107,13 @@ def viewDetail(request, pk,pk2):
 
     return render(request, 'kurir/distribusi_modul/distribusi_job_detail.html', {'takenDistribusi':takenDistribusi, 'detailOrder': detailOrder})
 
+@login_required
+@kurir_required
+def viewDetailFinish(request, pk, pk2):
+    detailOrder = DetailOrder.objects.filter(distribution=pk)
+    takenDistribusi = get_object_or_404(TakenDistribution, pk=pk2) #=> kurir , => distribution
 
-
+    return render(request, 'kurir/distribusi_modul/distribusi_finish_detail.html', {'takenDistribusi':takenDistribusi, 'detailOrder': detailOrder})
 
 
 @login_required 
@@ -125,8 +139,9 @@ def prosesDistribusi(request):
             obj.save()
             message='Distribusi Berhasil Diproses'
             typeMsg='success'
-
-            return render(request, 'kurir/distribusi_modul/distribusi_process.html', {'jobList' : jobList, 'message':message, 'typeMsg':typeMsg})
+            jobList = get_object_or_404(TakenDistribution, Q(kurir=id_kurir), Q(status_track='1'))
+            dataLog = DataLogPerjalanan.objects.filter(taken_distribution=jobList)
+            return render(request, 'kurir/distribusi_modul/distribusi_process.html', {'jobList' : jobList, 'message':message, 'typeMsg':typeMsg, 'dataLog':dataLog})
 
 
 @login_required 
